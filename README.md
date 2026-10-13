@@ -4,6 +4,8 @@
 
 
 
+
+
 Versione Android autonoma di **VibraVid Studio**, basata sul progetto [AstraeLabs/VibraVid](https://github.com/AstraeLabs/VibraVid). Ricerca, download e libreria funzionano sul telefono: non serve un PC acceso.
 
 [**Scarica l’APK 2.5.1**](https://github.com/Lumus122/VibraVid-For-Androd/releases/download/v2.5.1-android/VibraVid_Studio_Android.apk) · [Releases](https://github.com/Lumus122/VibraVid-For-Androd/releases) · [Guida d’uso](docs/HOW_TO_USE.md) · [Compilazione](docs/BUILD_ANDROID.md)
