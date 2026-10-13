@@ -1,6 +1,7 @@
 
 
-https://github.com/user-attachments/assets/995caa99-c0c7-4761-913e-fb237d67507a
+<video src="https://github.com/user-attachments/assets/995caa99-c0c7-4761-913e-fb237d67507a" controls width="250"></video>
+
 
 # VibraVid-For-Android
 
