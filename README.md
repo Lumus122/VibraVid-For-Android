@@ -1,6 +1,10 @@
 
 
-<video src="https://github.com/user-attachments/assets/995caa99-c0c7-4761-913e-fb237d67507a" controls width="150"></video>
+<div align="center">
+  <div style="max-width: 280px;">
+    <video src="https://github.com/user-attachments/assets/995caa99-c0c7-4761-913e-fb237d67507a" controls style="width: 100%; border-radius: 10px;"></video>
+  </div>
+</div>
 
 
 # VibraVid-For-Android
