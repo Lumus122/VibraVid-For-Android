@@ -1,0 +1,36 @@
+name: Bug Android
+description: Segnala un problema dell’app Android VibraVid Studio.
+title: "[Android] "
+body:
+  - type: markdown
+    attributes:
+      value: "Indica i passaggi e l’errore. Non includere password, cookie, token, dati personali o URL firmati completi."
+  - type: input
+    id: app_version
+    attributes:
+      label: Versione dell’app
+      placeholder: 2.5.1-android
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Telefono, versione Android e WebView
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Passaggi per riprodurre il problema
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Risultato atteso e risultato effettivo
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Messaggio d’errore o log ripulito

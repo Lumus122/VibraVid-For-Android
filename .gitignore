@@ -67,3 +67,13 @@ GUI/.django_secret_key
 
 # MkDocs build output
 /site/
+# Android local build and signing material
+VibraVid_Android/toolchain/
+VibraVid_Android/build/
+VibraVid_Android/.gradle/
+VibraVid_Android/app/build/
+VibraVid_Android/.signing/
+VibraVid_Android/local.properties
+*.p12
+*.jks
+*.keystore

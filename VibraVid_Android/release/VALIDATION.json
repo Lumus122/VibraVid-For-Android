@@ -1,0 +1,139 @@
+{
+  "version": "2.5.1-android",
+  "version_code": 25001,
+  "apk_sha256": "4fe6f9de33241d25cbc1cb9e819780e268f3f7058c35600ce68eb2f13eed2e4b",
+  "bytes": 6187657,
+  "scope": "Bug fixes only. Delivery requested by user without further tests.",
+  "native_reports": [
+    {
+      "version": "2.5.1-android",
+      "sha256": "011b7f9daf2ad5773cf78516a71ce1cf40d007e3f09d98e558bf59acc67285f9",
+      "utc": "2026-10-13T10:49:04.218400+00:00",
+      "runner": "AdapterSmoke",
+      "mode": "",
+      "passed": true,
+      "checks": 25,
+      "log": "release/adapter-smoke-251.txt"
+    },
+    {
+      "version": "2.5.1-android",
+      "sha256": "011b7f9daf2ad5773cf78516a71ce1cf40d007e3f09d98e558bf59acc67285f9",
+      "utc": "2026-10-13T10:50:21.370471+00:00",
+      "runner": "AdBlockSmoke",
+      "mode": "",
+      "passed": true,
+      "checks": 23,
+      "log": "release/adblock-smoke-251.txt"
+    },
+    {
+      "version": "2.5.1-android",
+      "sha256": "011b7f9daf2ad5773cf78516a71ce1cf40d007e3f09d98e558bf59acc67285f9",
+      "utc": "2026-10-13T10:42:49.748881+00:00",
+      "runner": "AndroidSmoke",
+      "mode": "",
+      "passed": true,
+      "checks": 9,
+      "log": "release/android-smoke-251.txt"
+    },
+    {
+      "version": "2.5.1-android",
+      "sha256": "011b7f9daf2ad5773cf78516a71ce1cf40d007e3f09d98e558bf59acc67285f9",
+      "utc": "2026-10-13T10:45:21.223158+00:00",
+      "runner": "AuditSmoke",
+      "mode": "",
+      "passed": true,
+      "checks": 32,
+      "log": "release/audit-smoke-251.txt"
+    },
+    {
+      "version": "2.5.1-android",
+      "sha256": "98f49b9cb640455f2d752af9faac1765961de570b0844b1846ba4846b43203ab",
+      "utc": "2026-10-13T11:09:43.665627+00:00",
+      "runner": "PickerSmoke",
+      "mode": "",
+      "passed": true,
+      "checks": 14,
+      "log": "release/picker-smoke-251.txt"
+    },
+    {
+      "version": "2.5.1-android",
+      "sha256": "98f49b9cb640455f2d752af9faac1765961de570b0844b1846ba4846b43203ab",
+      "utc": "2026-10-13T11:04:52.472974+00:00",
+      "runner": "ProviderSmoke",
+      "mode": "",
+      "passed": true,
+      "checks": 20,
+      "log": "release/provider-smoke-251.txt"
+    },
+    {
+      "version": "2.5.1-android",
+      "sha256": "98f49b9cb640455f2d752af9faac1765961de570b0844b1846ba4846b43203ab",
+      "utc": "2026-10-13T11:08:38.129790+00:00",
+      "runner": "QueueSmoke",
+      "mode": "",
+      "passed": true,
+      "checks": 12,
+      "log": "release/queue-smoke-251.txt"
+    },
+    {
+      "version": "2.5.1-android",
+      "sha256": "011b7f9daf2ad5773cf78516a71ce1cf40d007e3f09d98e558bf59acc67285f9",
+      "utc": "2026-10-13T10:47:03.482922+00:00",
+      "runner": "ReliabilitySmoke",
+      "mode": "",
+      "passed": true,
+      "checks": 28,
+      "log": "release/reliability-smoke-251.txt"
+    },
+    {
+      "version": "2.5.1-android",
+      "sha256": "011b7f9daf2ad5773cf78516a71ce1cf40d007e3f09d98e558bf59acc67285f9",
+      "utc": "2026-10-13T10:48:26.134736+00:00",
+      "runner": "TransportSmoke",
+      "mode": "",
+      "passed": true,
+      "checks": 17,
+      "log": "release/transport-smoke-251.txt"
+    }
+  ],
+  "native_checks_passed_across_incremental_builds": 180,
+  "final_apk_native_reports": [],
+  "model_checks": 22,
+  "appearance_checks": 123,
+  "browser_page_cases": 300,
+  "browser_dialog_cases": 10,
+  "browser_race_cases": 2,
+  "release_checks": {
+    "sha256": "4fe6f9de33241d25cbc1cb9e819780e268f3f7058c35600ce68eb2f13eed2e4b",
+    "sources_match": true,
+    "embedded_assets_match": true,
+    "test_runners_in_apk": false,
+    "colors_checked": 47,
+    "appearance": {
+      "checks": 123,
+      "minimum_text_contrast": 5.41
+    },
+    "posters_original_color": true,
+    "contrast": {
+      "#f3f2ef on #1e2025": 14.56,
+      "#bec0c6 on #30333b": 6.94,
+      "#111215 on #e4e2dc": 14.46,
+      "#bec0c6 on #2b2e35": 7.47
+    },
+    "same_certificate_as_2_3": true,
+    "certificate_sha256": "46eb37b17e112eb855fa340f22d96aca07c05c4fe530e370f3a532b9eba5402a"
+  },
+  "physical_phone_tested": false,
+  "cache_regression_final_apk": "interrupted at user request; not claimed passed",
+  "lint": {
+    "errors": 0,
+    "warnings": 32,
+    "final_source_checked": true
+  },
+  "limitations": [
+    "Tests used dedicated API 28 emulator and isolated browser preview.",
+    "Native suite reports identify exact tested APK hashes; not all suites were repeated on the last incremental build.",
+    "Physical SAF picker, Android 13+ notifications, Android 15 restrictions and OEM power management remain unverified.",
+    "No zero-bug guarantee and no guarantee of third-party source availability."
+  ]
+}

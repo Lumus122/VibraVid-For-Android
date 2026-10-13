@@ -1,76 +1,53 @@
-<div align="center">
+# VibraVid-For-Androd
 
-# VibraVid
+Versione Android autonoma di **VibraVid Studio**, basata sul progetto [AstraeLabs/VibraVid](https://github.com/AstraeLabs/VibraVid). Ricerca, download e libreria funzionano sul telefono: non serve un PC acceso.
 
-[![Windows](https://img.shields.io/badge/🪟_Windows-0078D4?style=for-the-badge&logo=windows&logoColor=white&labelColor=2d3748)](https://github.com/AstraeLabs/VibraVid/releases/latest/download/VibraVid_win_2025_x64.exe)
-[![macOS](https://img.shields.io/badge/🍎_macOS-000000?style=for-the-badge&logo=apple&logoColor=white&labelColor=2d3748)](https://github.com/AstraeLabs/VibraVid/releases/latest/download/VibraVid_mac_15_arm64)
-[![Linux](https://img.shields.io/badge/🐧_Linux_latest-FCC624?style=for-the-badge&logo=linux&logoColor=black&labelColor=2d3748)](https://github.com/AstraeLabs/VibraVid/releases/latest/download/VibraVid_linux_24_04_x64)
+[**Scarica l’APK 2.5.1**](https://github.com/Lumus122/VibraVid-For-Androd/releases/download/v2.5.1-android/VibraVid_Studio_Android.apk) · [Releases](https://github.com/Lumus122/VibraVid-For-Androd/releases) · [Guida d’uso](docs/HOW_TO_USE.md) · [Compilazione](docs/BUILD_ANDROID.md)
 
-<video src="https://github.com/user-attachments/assets/f6bdd5f6-5d98-42ae-b35b-8b5220000573" controls muted width="720"></video>
+## Funzionalità
 
-</div>
+- Ricerca e download diretto dall’app; scelta del risultato quando esistono titoli omonimi.
+- Film, stagioni ed episodi con sei adattatori automatici e 27 indirizzi configurabili.
+- Download HLS, DASH e video progressivi; pausa, ripresa, riparazione e riproduzione offline.
+- Libreria fino a 2.000 titoli, raccolte, note, valutazioni, filtri e proposte Serata.
+- Browser delle fonti con blocco pubblicità, immagini a colori, dieci layout e dieci palette.
+- Importazione/esportazione della libreria, video del dispositivo, ripresa della posizione e Picture-in-Picture.
 
----
+## Installazione
 
-## Quick Start
+1. Serve **Android 8.0 o successivo** e Android System WebView aggiornato.
+2. Scarica `VibraVid_Studio_Android.apk` dalla [release](https://github.com/Lumus122/VibraVid-For-Androd/releases/tag/v2.5.1-android).
+3. Apri il file sul telefono e, se richiesto, consenti al browser o al gestore file di installare l’app.
+4. Se hai già una versione firmata con la stessa chiave, installa l’aggiornamento senza disinstallare: libreria e download vengono conservati.
 
-```bash
-git clone https://github.com/AstraeLabs/VibraVid.git
-cd VibraVid
-pip install -r requirements.txt
-python manual.py
-```
+L’APK è unico per tutte le architetture supportate. Non occorrono Python, Termux, Docker o un server sul PC.
 
-Full installation options (Unraid, Android/Termux, `uv`), updating, and CLI usage are
-covered in the
-[Installation guide](https://astraelabs.github.io/VibraVid/#installation) and
-[CLI usage guide](https://astraelabs.github.io/VibraVid/cli/).
+## Primo utilizzo
 
----
+Apri **Cerca**, scrivi il titolo e premi **Cerca e scarica**. Una corrispondenza esatta e univoca avvia il download; negli altri casi scegli il risultato. Per serie e anime scegli stagione ed episodio. In **Download** trovi avanzamento e **Guarda offline** quando il video è completo.
 
-## Documentation
+**Cerca informazioni** recupera soltanto metadati e locandine: salvare una scheda nella Libreria non scarica il video. In **Impostazioni → Aspetto** puoi scegliere separatamente layout e palette; il default resta Classico/Grafite.
 
-📚 Full docs (with search) on the **[documentation site](https://astraelabs.github.io/VibraVid/)**.
+La [guida completa](docs/HOW_TO_USE.md) spiega fonti, Wi-Fi, adblock, backup e risoluzione dei problemi.
 
-| Topic | |
-|---|---|
-| ⚙️ [Configuration](https://astraelabs.github.io/VibraVid/configuration/) | `config.json` reference — DEFAULT, OUTPUT, DOWNLOAD (stream selection filters), CODEC, PROCESS, REQUESTS, DRM |
-| 💻 [CLI Usage](https://astraelabs.github.io/VibraVid/cli/) | Search, series selection, year filter, track overrides, proxy, direct URL download, download queue |
-| 🌐 [Web GUI](https://astraelabs.github.io/VibraVid/gui/) | Django-based browser interface |
-| ⌨️ [TUI](https://astraelabs.github.io/VibraVid/tui/) | Terminal user interface (Textual) |
-| 🤖 [Telegram Bot](https://astraelabs.github.io/VibraVid/telegram/) | Trigger downloads from chat |
-| 🔗 [ARR Integration](https://astraelabs.github.io/VibraVid/arr/) | Seerr/Jellyseerr, Sonarr, Radarr automation |
-| 🪝 [Hook System](https://astraelabs.github.io/VibraVid/hooks/) | Run custom scripts on download lifecycle events |
-| 🐳 [Docker](https://astraelabs.github.io/VibraVid/docker/) | Compose, custom ports/paths, private network deployment |
-| 🖥️ [NAS Deployment](https://astraelabs.github.io/VibraVid/nas/) | Synology, TrueNAS, Unraid |
-| 🌍 [Supported Sites](https://astraelabs.github.io/VibraVid/supported-sites/) | Full list of supported streaming services |
-| 🔑 [Login Guide](https://astraelabs.github.io/VibraVid/login/) | Authentication for supported services |
+## Compatibilità e stato delle verifiche
 
+Gli adattatori Android automatici sono StreamingCommunity, Streamingcommunity 2, AnimeUnity, AnimeWorld, Eurostreaming e RaiPlay. I 27 indirizzi conservati non equivalgono a 27 adattatori automatici. Disponibilità, protocolli e accesso delle fonti possono cambiare; DRM e dirette non sono supportati dal download offline.
 
-## Related Projects
+HLS/DASH sono conservati come manifest e tracce nella cache privata dell’app, senza conversione in un MP4 esportabile. Disinstallare l’app elimina libreria e download privati; prima di farlo esporta la libreria.
 
-- **[MammaMia](https://github.com/UrloMythus/MammaMia)** — Stremio addon for Italian streaming (by UrloMythus)
-- **[Unit3Dup](https://github.com/31December99/Unit3Dup)** — Torrent automation for Unit3D tracker (by 31December99)
-- **[N_m3u8DL-RE](https://github.com/nilaoda/N_m3u8DL-RE)** — Universal downloader for HLS/DASH/ISM (by nilaoda)
-- **[pywidevine](https://github.com/devine-dl/pywidevine)** — Widevine L3 decryption library (by devine-dl)
-- **[pyplayready](https://git.gay/ready-dl/pyplayready)** — PlayReady decryption library (by ready-dl)
+La release 2.5.1 contiene correzioni di affidabilità, senza nuove funzionalità. Firma, integrità e corrispondenza dei sorgenti sono verificate; 145 controlli sul modello/aspetto e 300 casi grafici sono superati. Le suite native sono state eseguite su build incrementali con un emulatore Android 9. **L’ultima regressione del contatore della cache è stata interrotta prima del completamento e non viene dichiarata superata.** Non sono stati eseguiti test su un telefono fisico. Dettagli e hash in [QA.md](VibraVid_Android/QA.md) e [AUDIT.md](VibraVid_Android/AUDIT.md).
 
-## Disclaimer
+## Codice e compilazione
 
-> This software is for **educational and research purposes only**. The authors:
->
-> - **DO NOT** assume responsibility for illegal use
-> - **DO NOT** provide or facilitate DRM circumvention tools, CDMs, or decryption keys
-> - **DO NOT** endorse piracy or copyright infringement
->
-> By using this software, you agree to comply with all applicable laws and confirm you have rights to any content you process. No warranty is provided.
+Il progetto Android completo è in [`VibraVid_Android/`](VibraVid_Android/): Java, UI HTML/CSS/JavaScript, risorse, filtri, configurazione Gradle e strumenti di prova. Per creare il tuo APK segui [BUILD_ANDROID.md](docs/BUILD_ANDROID.md). La chiave privata usata per l’APK pubblicato è esclusa dal repository.
 
----
+Il codice desktop originale e la storia Git sono conservati dal fork; il [README originale](docs/UPSTREAM_README.md) descrive quella versione. La documentazione Android si riferisce esclusivamente al progetto in `VibraVid_Android/`.
 
-<div align="center">
+## Contributi e segnalazioni
 
-**Made with ❤️ for streaming lovers**
+Consulta [CONTRIBUTING.md](CONTRIBUTING.md) e usa le [Issues](https://github.com/Lumus122/VibraVid-For-Androd/issues) di questo fork per i problemi Android. Indica versione dell’app, versione Android/WebView, passaggi e messaggio d’errore. Le modifiche sono riassunte in [CHANGELOG.md](CHANGELOG.md).
 
-*If you find this project useful, consider starring it! ⭐*
+## Crediti e licenze
 
-</div>
+Progetto originale: **AstraeLabs e collaboratori di VibraVid**. Questo fork ospita un adattamento Android indipendente e non è una release ufficiale di AstraeLabs. Licenza [GNU GPL v3](LICENSE); le dipendenze e gli asset conservano le proprie licenze, elencate nelle [notifiche di terze parti](VibraVid_Android/app/src/main/assets/THIRD-PARTY-NOTICES.txt). Nessun film o credenziale delle fonti è incluso nel repository.

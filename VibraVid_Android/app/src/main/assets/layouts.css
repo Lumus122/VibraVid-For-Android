@@ -1,0 +1,175 @@
+/* Palette semantics apply to every layout, including light schemes. */
+:root{--on-accent:#111215;--button-start:#f3f2ef}
+.primary{background:linear-gradient(135deg,var(--button-start),var(--accent));color:var(--on-accent)}
+.segments button[aria-pressed=true],.card-save[data-saved=true]{color:var(--on-accent)}
+.switch[aria-checked=true]:before{background:var(--on-accent)}
+.poster .kind-badge{color:#f5f5f5}
+:root[data-scheme=light]{--shadow:0 10px 30px #00000010}
+:root[data-scheme=light] input:focus,:root[data-scheme=light] select:focus,:root[data-scheme=light] textarea:focus{box-shadow:0 0 0 3px var(--soft)}
+.bottom-nav a span{white-space:nowrap}
+@media(max-width:350px){.bottom-nav a{padding-left:4px;padding-right:4px}}
+@media(max-width:300px){:root[data-layout=editorial] .bottom-nav a{flex-direction:column}}
+
+/* Each profile controls the shell, every page and sheets, not just title cards. */
+:root[data-layout=compact]{--l-gap:12px;--l-pad:16px;--l-header:62px;--l-width:1120px;--l-radius:12px;--l-control:8px;--l-title:30px;--l-form:12px;--nav:68px}
+:root[data-layout=posters]{--l-gap:30px;--l-pad:26px;--l-header:84px;--l-width:1000px;--l-radius:26px;--l-control:16px;--l-title:42px;--l-form:22px;--nav:80px}
+:root[data-layout=list]{--l-gap:16px;--l-pad:20px;--l-header:66px;--l-width:900px;--l-radius:4px;--l-control:6px;--l-title:31px;--l-form:12px;--nav:66px}
+:root[data-layout=panels]{--l-gap:18px;--l-pad:20px;--l-header:72px;--l-width:1100px;--l-radius:6px;--l-control:6px;--l-title:32px;--l-form:16px;--nav:74px}
+:root[data-layout=focus]{--l-gap:26px;--l-pad:24px;--l-header:72px;--l-width:660px;--l-radius:18px;--l-control:12px;--l-title:36px;--l-form:20px;--nav:68px}
+:root[data-layout=editorial]{--l-gap:24px;--l-pad:22px;--l-header:66px;--l-width:1120px;--l-radius:3px;--l-control:5px;--l-title:40px;--l-form:18px;--nav:66px}
+:root[data-layout=studio]{--l-gap:16px;--l-pad:18px;--l-header:64px;--l-width:1280px;--l-radius:12px;--l-control:10px;--l-title:32px;--l-form:16px;--nav:72px}
+:root[data-layout=soft]{--l-gap:26px;--l-pad:24px;--l-header:82px;--l-width:920px;--l-radius:30px;--l-control:22px;--l-title:36px;--l-form:22px;--nav:82px}
+:root[data-layout=minimal]{--l-gap:18px;--l-pad:18px;--l-header:60px;--l-width:960px;--l-radius:0px;--l-control:3px;--l-title:30px;--l-form:14px;--nav:64px}
+
+:root:not([data-layout=classic]) main{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--l-gap);max-width:var(--l-width);padding:var(--l-gap) var(--l-pad) 32px;align-content:start;min-height:calc(100vh - var(--l-header) - var(--nav))}
+:root:not([data-layout=classic]) main>*{min-width:0;margin-top:0;margin-bottom:0}
+:root:not([data-layout=classic]) .topbar{height:var(--l-header);padding:10px var(--l-pad)}
+:root:not([data-layout=classic]) .page-intro h1,:root:not([data-layout=classic]) .page-title-row h1,:root:not([data-layout=classic]) .tonight-hero h1{font-size:var(--l-title);max-width:22ch}
+:root:not([data-layout=classic]) .quiet-card,:root:not([data-layout=classic]) .source-hero,:root:not([data-layout=classic]) .appearance-panel,:root:not([data-layout=classic]) .tonight-hero,:root:not([data-layout=classic]) .plan,:root:not([data-layout=classic]) .download-row,:root:not([data-layout=classic]) .local-file{border-radius:var(--l-radius)}
+:root:not([data-layout=classic]) .source-hero{padding:var(--l-form)}
+:root:not([data-layout=classic]) .primary,:root:not([data-layout=classic]) .secondary,:root:not([data-layout=classic]) .danger,:root:not([data-layout=classic]) input,:root:not([data-layout=classic]) select,:root:not([data-layout=classic]) textarea{border-radius:var(--l-control)}
+:root:not([data-layout=classic]) .form-grid,:root:not([data-layout=classic]) .tonight-form,:root:not([data-layout=classic]) .search-option-fields{gap:var(--l-form)}
+:root:not([data-layout=classic]) .bottom-nav{height:calc(var(--nav) + env(safe-area-inset-bottom))}
+:root:not([data-layout=classic]) dialog{border-radius:var(--l-radius) var(--l-radius) 0 0}
+:root:not([data-layout=classic]) .sheet-heading{padding:var(--l-form) var(--l-pad) 12px}
+:root:not([data-layout=classic]) .sheet-body{padding:12px var(--l-pad) var(--l-form)}
+.files-section{min-width:0}.files-section>.section-head{margin-top:18px}.files-section>.section-head:first-child{margin-top:0}
+.appearance-pickers{display:grid;gap:16px}.appearance-picker{min-width:0}.appearance-picker h3{margin-top:20px}
+#provider-results:empty,#provider-status:empty{display:none}
+
+/* Dense controls and shorter shell on every page. */
+:root[data-layout=compact] .topbar .brand{font-size:20px}
+:root[data-layout=compact] .source-hero form{gap:12px}
+:root[data-layout=compact] .direct-search .primary{min-height:48px}
+:root[data-layout=compact] .settings-list{gap:0}
+:root[data-layout=compact] .setting{padding:12px 0}
+:root[data-layout=compact] .appearance-panel{padding:16px}
+:root[data-layout=compact] .layout-choices,:root[data-layout=compact] .palette-choices{gap:6px}
+:root[data-layout=compact] .appearance-choice{min-height:66px;padding:9px}
+:root[data-layout=compact] .file-actions{gap:8px}
+
+/* Wide, centered introductions and generous single-column forms. */
+:root[data-layout=posters] .page-intro,:root[data-layout=posters] .tonight-hero{text-align:center}
+:root[data-layout=posters] .page-intro h1,:root[data-layout=posters] .page-intro p,:root[data-layout=posters] .tonight-hero h1,:root[data-layout=posters] .tonight-hero p{margin-left:auto;margin-right:auto}
+:root[data-layout=posters] .page-title-row{justify-content:center;flex-wrap:wrap}
+:root[data-layout=posters] .source-hero form,:root[data-layout=posters] .tonight-form{gap:24px}
+:root[data-layout=posters] .tonight-form{grid-template-columns:1fr}
+:root[data-layout=posters] .tonight-form .full{grid-column:auto}
+:root[data-layout=posters] .file-actions{flex-direction:column}
+:root[data-layout=posters] .bottom-nav a{border-radius:22px}
+:root[data-layout=posters] .setting{padding:24px 0}
+
+/* Linear rows and label/value forms throughout, including sheets. */
+:root[data-layout=list] .source-hero,:root[data-layout=list] .quiet-card,:root[data-layout=list] .appearance-panel,:root[data-layout=list] .tonight-hero{background:transparent;box-shadow:none;border:0;border-top:1px solid var(--line);padding:20px 0}
+:root[data-layout=list] .search-footnote{padding:18px 0;border-top:1px solid var(--line)}
+:root[data-layout=list] .form-grid,:root[data-layout=list] .tonight-form{grid-template-columns:1fr}
+:root[data-layout=list] .form-grid .full,:root[data-layout=list] .tonight-form .full{grid-column:auto}
+:root[data-layout=list] .layout-choices,:root[data-layout=list] .palette-choices{grid-template-columns:1fr}
+:root[data-layout=list] .appearance-choice{border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent}
+:root[data-layout=list] .appearance-choice[aria-pressed=true]{background:var(--soft);box-shadow:inset 3px 0 var(--accent)}
+:root[data-layout=list] .file-actions{flex-wrap:wrap}
+:root[data-layout=list] .bottom-nav{box-shadow:none;border-radius:0}
+:root[data-layout=list] .plan{border:0;background:transparent}
+
+/* A panel surrounds each working area, not only the library grid. */
+:root[data-layout=panels] .tonight-form,:root[data-layout=panels] .files-section{padding:18px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+:root[data-layout=panels] .files-section .download-row,:root[data-layout=panels] .files-section .local-file{background:var(--recess)}
+:root[data-layout=panels] .bottom-nav a{border-radius:5px}
+:root[data-layout=panels] .sheet-heading{border-bottom:1px solid var(--line)}
+
+/* Focus moves navigation above the content on phones and tablets alike. */
+:root[data-layout=focus]{scroll-padding-top:calc(var(--l-header) + var(--nav) + 20px)}
+:root[data-layout=focus] body{padding-top:var(--nav);padding-bottom:env(safe-area-inset-bottom)}
+:root[data-layout=focus] .topbar{position:fixed;top:0;left:0;right:0}
+:root[data-layout=focus] .bottom-nav{top:var(--l-header);bottom:auto;left:0;right:0;width:100%;max-width:none;transform:none;border-radius:0;border-top:0;border-bottom:1px solid var(--line);padding-bottom:9px;background:var(--paper)}
+:root[data-layout=focus] main{margin-top:var(--l-header)}
+:root[data-layout=focus] .source-hero,:root[data-layout=focus] .tonight-form,:root[data-layout=focus] .files-section,:root[data-layout=focus] .settings-list{padding:22px;border:1px solid var(--line);background:var(--surface);border-radius:18px}
+:root[data-layout=focus] .file-actions{flex-direction:column}
+:root[data-layout=focus] .form-grid,:root[data-layout=focus] .tonight-form{grid-template-columns:1fr}
+:root[data-layout=focus] .form-grid .full,:root[data-layout=focus] .tonight-form .full{grid-column:auto}
+:root[data-layout=focus] .poster-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+:root[data-layout=focus] body.keyboard .bottom-nav{transform:translateY(-220%)}
+
+/* An editorial rhythm: rules, large headings, horizontal navigation labels. */
+:root[data-layout=editorial] .page-intro,:root[data-layout=editorial] .tonight-hero{border:0;border-top:3px solid var(--accent);padding:22px 0;background:transparent;box-shadow:none}
+:root[data-layout=editorial] .source-hero,:root[data-layout=editorial] .quiet-card,:root[data-layout=editorial] .appearance-panel{background:transparent;box-shadow:none;border-width:1px 0;padding-left:0;padding-right:0}
+:root[data-layout=editorial] .bottom-nav a{flex-direction:row;gap:6px;padding:7px 6px;min-width:0;border-radius:0}
+:root[data-layout=editorial] .bottom-nav a[aria-current=page]{background:transparent;border-bottom:2px solid var(--accent)}
+:root[data-layout=editorial] .title-card{border-bottom:1px solid var(--line);padding-bottom:15px}
+:root[data-layout=editorial] .poster{border-radius:3px}
+:root[data-layout=editorial] .plan-head{background:transparent;border-bottom:1px solid var(--line)}
+
+/* Studio uses a navigation rail on phones as well as larger screens. */
+:root[data-layout=studio]{--rail:76px;--nav:0px}
+:root[data-layout=studio] body{padding-bottom:0}
+:root[data-layout=studio] .bottom-nav{top:var(--l-header);bottom:0;left:0;right:auto;width:var(--rail);max-width:none;height:auto;transform:none;flex-direction:column;justify-content:flex-start;border-radius:0;border-top:0;border-right:1px solid var(--line);padding:16px 5px;gap:12px;overflow-y:auto}
+:root[data-layout=studio] .bottom-nav a{width:66px;min-width:0;min-height:64px;padding:10px 3px}
+:root[data-layout=studio] main{margin-left:var(--rail);margin-right:0;width:calc(100% - var(--rail))}
+:root[data-layout=studio] body.keyboard .bottom-nav{transform:none}
+:root[data-layout=studio] .file-actions{flex-direction:column}
+:root[data-layout=studio] .appearance-panel{padding:12px}
+:root[data-layout=studio] .appearance-choice{gap:8px;padding:10px}
+:root[data-layout=studio] .layout-mini,:root[data-layout=studio] .palette-swatch{width:32px}
+:root[data-layout=studio] .source-hero,:root[data-layout=studio] .tonight-form,:root[data-layout=studio] .files-section,:root[data-layout=studio] .settings-list{padding:20px;border:1px solid var(--line);background:var(--surface);border-radius:12px}
+:root[data-layout=studio] .page-intro{padding:0 0 15px;border-bottom:1px solid var(--line)}
+:root[data-layout=studio] .search-footnote{background:var(--recess);padding:18px;border:1px solid var(--line);border-radius:12px}
+:root[data-layout=studio] .appearance-choices{gap:8px}
+
+/* Soft follows the same rhythm in navigation, forms, settings and sheets. */
+:root[data-layout=soft] .page-intro{padding:24px;background:var(--surface);border-radius:30px}
+:root[data-layout=soft] .source-hero,:root[data-layout=soft] .quiet-card,:root[data-layout=soft] .tonight-form,:root[data-layout=soft] .files-section,:root[data-layout=soft] .settings-list{padding:24px;background:var(--surface);border:1px solid var(--line);border-radius:30px}
+:root[data-layout=soft] .primary,:root[data-layout=soft] .secondary{min-height:54px;border-radius:100px}
+:root[data-layout=soft] .icon-button{border-radius:50%}
+:root[data-layout=soft] .bottom-nav a{border-radius:100px}
+:root[data-layout=soft] .form-grid,:root[data-layout=soft] .tonight-form{grid-template-columns:1fr}
+:root[data-layout=soft] .form-grid .full,:root[data-layout=soft] .tonight-form .full{grid-column:auto}
+:root[data-layout=soft] .poster{border-radius:28px}
+:root[data-layout=soft] .appearance-choice{border-radius:22px;min-height:80px}
+
+/* Minimal removes boxed surfaces across the entire application. */
+:root[data-layout=minimal] .source-hero,:root[data-layout=minimal] .quiet-card,:root[data-layout=minimal] .tonight-hero,:root[data-layout=minimal] .appearance-panel,:root[data-layout=minimal] .plan,:root[data-layout=minimal] .download-row,:root[data-layout=minimal] .local-file{background:transparent;border:0;box-shadow:none;padding:16px 0}
+:root[data-layout=minimal] .appearance-choice{border:0;border-bottom:1px solid var(--line);background:transparent;border-radius:0}
+:root[data-layout=minimal] .appearance-choice[aria-pressed=true]{background:var(--soft)}
+:root[data-layout=minimal] input,:root[data-layout=minimal] select,:root[data-layout=minimal] textarea{background:var(--paper);border-width:0 0 1px;box-shadow:none}
+:root[data-layout=minimal] .primary,:root[data-layout=minimal] .poster{box-shadow:none}
+:root[data-layout=minimal] .bottom-nav{background:var(--paper);box-shadow:none;border-radius:0}
+:root[data-layout=minimal] .bottom-nav a{border-radius:3px;min-height:46px}
+:root[data-layout=minimal] .plan-head{background:transparent;border-bottom:1px solid var(--line);padding-left:0;padding-right:0}
+:root[data-layout=minimal] .download-row,:root[data-layout=minimal] .local-file{border-bottom:1px solid var(--line)}
+
+.layout-mini[data-mini=focus]{grid-template-columns:1fr}.layout-mini[data-mini=focus] i:first-child{height:4px}.layout-mini[data-mini=focus] i:nth-child(2){grid-row:span 3}.layout-mini[data-mini=focus] i:nth-child(n+3){display:none}
+.layout-mini[data-mini=editorial]{grid-template-columns:1fr 1fr;border-top:3px solid var(--muted);border-radius:0}
+.layout-mini[data-mini=studio]{grid-template-columns:5px 1fr}.layout-mini[data-mini=studio] i:first-child{grid-row:span 3}
+.layout-mini[data-mini=soft]{border-radius:12px}.layout-mini[data-mini=soft] i{border-radius:8px}
+.layout-mini[data-mini=minimal]{border:0;border-radius:0;grid-template-columns:1fr}.layout-mini[data-mini=minimal] i{height:3px;align-self:center}
+
+@media(min-width:600px){
+ :root:not([data-layout=classic]) dialog{border-radius:var(--l-radius)}
+ :root[data-layout=list] .field{display:grid;grid-template-columns:160px minmax(0,1fr);align-items:center;gap:16px}
+ :root[data-layout=list] .field .hint{grid-column:2}
+ :root[data-layout=studio]{--rail:94px}
+ :root[data-layout=studio] .bottom-nav{padding:20px 8px;gap:15px}
+ :root[data-layout=studio] .bottom-nav a{width:76px;min-height:64px;padding:10px 4px}
+ :root[data-layout=studio] .appearance-pickers,:root[data-layout=editorial] .appearance-pickers{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+ :root[data-layout=studio] .layout-choices,:root[data-layout=studio] .palette-choices,:root[data-layout=editorial] .layout-choices,:root[data-layout=editorial] .palette-choices{grid-template-columns:1fr}
+ :root[data-layout=panels] main[data-page=files],:root[data-layout=editorial] main[data-page=files],:root[data-layout=studio] main[data-page=files]{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+ :root[data-layout=panels] main[data-page=files]>.page-intro,:root[data-layout=panels] main[data-page=files]>.file-actions,:root[data-layout=panels] main[data-page=files]>.note,:root[data-layout=editorial] main[data-page=files]>.page-intro,:root[data-layout=editorial] main[data-page=files]>.file-actions,:root[data-layout=editorial] main[data-page=files]>.note,:root[data-layout=studio] main[data-page=files]>.page-intro,:root[data-layout=studio] main[data-page=files]>.file-actions,:root[data-layout=studio] main[data-page=files]>.note{grid-column:1/-1}
+ :root[data-layout=soft] .layout-choices,:root[data-layout=soft] .palette-choices{grid-template-columns:1fr 1fr}
+}
+@media(min-width:800px){
+ :root[data-layout=editorial] main[data-page=search],:root[data-layout=studio] main[data-page=search]{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);align-items:start}
+ :root[data-layout=editorial] main[data-page=search]>.page-intro,:root[data-layout=studio] main[data-page=search]>.page-intro{grid-column:1;grid-row:1}
+ :root[data-layout=editorial] main[data-page=search]>.source-hero,:root[data-layout=studio] main[data-page=search]>.source-hero{grid-column:2;grid-row:1/3}
+ :root[data-layout=editorial] main[data-page=search]>.search-footnote,:root[data-layout=studio] main[data-page=search]>.search-footnote{grid-column:1;grid-row:2}
+ :root[data-layout=editorial] main[data-page=search]>#provider-results,:root[data-layout=editorial] main[data-page=search]>#provider-progress,:root[data-layout=editorial] main[data-page=search]>#provider-status,:root[data-layout=studio] main[data-page=search]>#provider-results,:root[data-layout=studio] main[data-page=search]>#provider-progress,:root[data-layout=studio] main[data-page=search]>#provider-status{grid-column:1/-1}
+ :root[data-layout=panels] main[data-page=tonight],:root[data-layout=editorial] main[data-page=tonight],:root[data-layout=studio] main[data-page=tonight]{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+ :root[data-layout=panels] main[data-page=tonight]>#tonight-plan,:root[data-layout=panels] main[data-page=tonight]>.note,:root[data-layout=editorial] main[data-page=tonight]>#tonight-plan,:root[data-layout=editorial] main[data-page=tonight]>.note,:root[data-layout=studio] main[data-page=tonight]>#tonight-plan,:root[data-layout=studio] main[data-page=tonight]>.note{grid-column:1/-1}
+}
+@media(max-width:350px){
+ :root:not([data-layout=classic]){--l-pad:15px}
+ :root[data-layout=posters]{--l-title:35px}
+ :root[data-layout=editorial]{--l-title:34px}
+ :root[data-layout=soft] .page-intro,:root[data-layout=soft] .files-section,:root[data-layout=soft] .tonight-form{padding:18px}
+ :root[data-layout=editorial] .bottom-nav a{gap:3px;font-size:10px;padding:7px 3px}
+ :root[data-layout=editorial] .bottom-nav svg{width:18px;height:18px}
+}

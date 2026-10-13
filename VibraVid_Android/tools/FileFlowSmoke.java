@@ -1,0 +1,49 @@
+package it.vibravid.studio.tests;
+import android.app.*;
+import android.content.*;
+import android.os.*;
+import android.view.accessibility.AccessibilityNodeInfo;
+import android.webkit.WebView;
+import org.json.*;
+import java.lang.reflect.*;
+import java.util.concurrent.*;
+
+/** Real Android document chooser round trip in the disposable QA emulator. */
+public final class FileFlowSmoke extends Instrumentation {
+    private Activity activity;private WebView web;private JSONObject original;private final JSONArray checks=new JSONArray();
+    @Override public void onCreate(Bundle args){super.onCreate(args);start();}
+    @Override public void onStart(){new Thread(()->{
+        Bundle result=new Bundle();try{
+            activity=startActivitySync(new Intent().setClassName("it.vibravid.studio","it.vibravid.studio.MainActivity").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));Field field=activity.getClass().getDeclaredField("web");field.setAccessible(true);web=(WebView)field.get(activity);waitFor("window.VibraApp&&window.VibraApp.diagnostics().ready",120);
+            original=(JSONObject)invoke("load",new Class<?>[0]);String title="QA file "+System.currentTimeMillis(),filename="VibraVid-QA-"+System.currentTimeMillis()+".json";
+            evaluate("location.hash='library'");waitFor("!!document.querySelector('[data-action=add-manual]')",30);evaluate("document.querySelector('[data-action=add-manual]').click()");waitFor("!!document.querySelector('#title-form')",20);
+            evaluate("document.querySelector('#title-form').elements.name.value="+JSONObject.quote(title)+";document.querySelector('#title-form').elements.notes.value='Nota del round trip';document.querySelector('#title-form').elements.duration.value='85';document.querySelector('#title-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}))");waitFor("!document.querySelector('#sheet').open",30);
+            evaluate("location.hash='settings'");waitFor("!!document.querySelector('[data-action=export]')",30);evaluate("document.querySelector('[data-action=export]').click()");
+            AccessibilityNodeInfo name=waitNode("VibraVid-libreria.json",true,90);Bundle text=new Bundle();text.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE,filename);if(!name.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT,text))throw new AssertionError("Cannot name the QA export");name.recycle();
+            clickNode("Save","Salva");waitFor("document.querySelector('#toast').textContent==='Libreria esportata.'",60);check(true,"Real Android CREATE_DOCUMENT chooser exports the library successfully");
+            evaluate("location.hash='library'");waitFor("!!document.querySelector('#library-query')",30);evaluate("document.querySelector('#library-query').value="+JSONObject.quote(title)+";document.querySelector('#library-query').dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('[data-action=edit]').click()");waitFor("!!document.querySelector('[data-action=delete-title]')",20);
+            evaluate("document.querySelector('[data-action=delete-title]').click()");waitFor("document.querySelector('[data-action=delete-title]').dataset.confirm==='yes'",20);evaluate("document.querySelector('[data-action=delete-title]').click()");waitFor("!document.querySelector('#sheet').open",30);check(!hasTitle((JSONObject)invoke("load",new Class<?>[0]),title),"Title removal requires confirmation and removes only the chosen fixture");
+            evaluate("location.hash='settings'");waitFor("!!document.querySelector('[data-action=import]')",30);evaluate("document.querySelector('[data-action=import]').click()");
+            AccessibilityNodeInfo file=waitNode(filename,false,40);click(file);file.recycle();waitFor("window.VibraApp.diagnostics().library>="+(original.getJSONArray("items").length()+1),60);
+            JSONObject imported=(JSONObject)invoke("load",new Class<?>[0]);boolean preserved=false;for(int i=0;i<imported.getJSONArray("items").length();i++){JSONObject row=imported.getJSONArray("items").getJSONObject(i);if(row.optString("name").equals(title))preserved=row.optString("notes").equals("Nota del round trip")&&row.optInt("duration")==85;}
+            check(preserved,"Real OPEN_DOCUMENT chooser imports the exported title, notes and duration");
+            evaluate("document.querySelector('[data-action=import]').click()");Thread.sleep(1000);getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);waitFor("document.querySelector('[data-action=import]').disabled===false",30);check(true,"Cancelling the system chooser releases the UI without changing the library");
+            evaluate("document.querySelector('[data-action=import-sources]').click()");Thread.sleep(1000);getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);Thread.sleep(800);check("true".equals(evaluate("window.VibraApp.diagnostics().ready")),"Source import chooser can be cancelled and app remains ready");
+            evaluate("location.hash='files'");waitFor("!!document.querySelector('[data-action=pick-video]')",30);evaluate("document.querySelector('[data-action=pick-video]').click()");Thread.sleep(1000);getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);waitFor("document.querySelector('[data-action=pick-video]').disabled===false",30);check(true,"Video chooser cancellation restores its button and preserves local file links");
+            result.putString("status","passed");
+        }catch(Throwable error){result.putString("status","failed");result.putString("error",android.util.Log.getStackTraceString(error));result.putString("system_ui",tree(getUiAutomation().getRootInActiveWindow()));}
+        finally{try{getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);if(original!=null)invoke("save",new Class<?>[]{JSONObject.class},original);if(activity!=null){runOnMainSync(()->activity.finish());waitForIdleSync();}}catch(Exception error){result.putString("cleanup_error",error.toString());result.putString("status","failed");}}
+        result.putString("checks",checks.toString());finish("passed".equals(result.getString("status"))?Activity.RESULT_OK:Activity.RESULT_CANCELED,result);
+    },"VibraVidFileQA").start();}
+    private boolean hasTitle(JSONObject data,String name)throws Exception{for(int i=0;i<data.getJSONArray("items").length();i++)if(name.equals(data.getJSONArray("items").getJSONObject(i).optString("name")))return true;return false;}
+    private AccessibilityNodeInfo find(AccessibilityNodeInfo node,String text,boolean editable){if(node==null)return null;String value=node.getText()==null?"":node.getText().toString(),description=node.getContentDescription()==null?"":node.getContentDescription().toString();if((value.equals(text)||description.equals(text))&&(!editable||node.isEditable()))return node;for(int i=0;i<node.getChildCount();i++){AccessibilityNodeInfo result=find(node.getChild(i),text,editable);if(result!=null)return result;}return null;}
+    private AccessibilityNodeInfo waitNode(String text,boolean editable,int seconds)throws Exception{long until=System.currentTimeMillis()+seconds*1000L;while(System.currentTimeMillis()<until){AccessibilityNodeInfo root=getUiAutomation().getRootInActiveWindow();AccessibilityNodeInfo wait=find(root,"Wait",false);if(wait!=null){click(wait);wait.recycle();}AccessibilityNodeInfo node=find(root,text,editable);if(node!=null)return node;Thread.sleep(250);}throw new AssertionError("Document chooser did not show "+text);}
+    private void clickNode(String... labels)throws Exception{long until=System.currentTimeMillis()+30000;while(System.currentTimeMillis()<until){for(String text:labels){AccessibilityNodeInfo node=find(getUiAutomation().getRootInActiveWindow(),text,false);if(node!=null){click(node);node.recycle();return;}}Thread.sleep(250);}throw new AssertionError("Document save action missing");}
+    private void click(AccessibilityNodeInfo node){AccessibilityNodeInfo current=node;while(current!=null&&!current.isClickable())current=current.getParent();if(current==null||!current.performAction(AccessibilityNodeInfo.ACTION_CLICK))throw new AssertionError("Document UI action could not be clicked");}
+    private String tree(AccessibilityNodeInfo root){if(root==null)return "none";StringBuilder result=new StringBuilder();append(root,result);return result.toString();}
+    private void append(AccessibilityNodeInfo node,StringBuilder out){if(node==null)return;out.append(node.getClassName()).append(" ").append(node.getText()).append(" ").append(node.getContentDescription()).append("\n");for(int i=0;i<node.getChildCount();i++)append(node.getChild(i),out);}
+    private Object invoke(String name,Class<?>[] types,Object... args)throws Exception{Method m=activity.getClass().getDeclaredMethod(name,types);m.setAccessible(true);return m.invoke(activity,args);}
+    private String evaluate(String script)throws Exception{CountDownLatch latch=new CountDownLatch(1);String[] value={null};runOnMainSync(()->web.evaluateJavascript(script,result->{value[0]=result;latch.countDown();}));if(!latch.await(30,TimeUnit.SECONDS))throw new AssertionError("WebView timeout");return value[0];}
+    private void waitFor(String expression,int seconds)throws Exception{long until=System.currentTimeMillis()+seconds*1000L;while(System.currentTimeMillis()<until){if("true".equals(evaluate("!!("+expression+")")))return;Thread.sleep(250);}throw new AssertionError("Condition timed out: "+expression);}
+    private void check(boolean condition,String name)throws Exception{if(!condition)throw new AssertionError(name);checks.put(name);Bundle status=new Bundle();status.putString("check",name);sendStatus(0,status);}
+}

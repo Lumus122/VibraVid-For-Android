@@ -1,0 +1,15 @@
+{
+  "source": "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt",
+  "homepage": "https://github.com/AdguardTeam/AdGuardSDNSFilter",
+  "license": "GPL-3.0",
+  "upstream_last_modified": "2026-10-12T16:16:44.976Z",
+  "upstream_sha256": "7946dc31077cc1013466a45534c8134c14d25bc16543cef96ceb0988b1697925",
+  "rules": {
+    "B": 183307,
+    "A": 180,
+    "E": 19,
+    "I": 3
+  },
+  "unsupported_rules_omitted": 685,
+  "scope": "Literal domain rules and exceptions; not a full ABP rule interpreter."
+}

@@ -1,0 +1,191 @@
+[
+  {
+    "id": "streamingcommunity",
+    "name": "StreamingCommunity",
+    "url": "https://streamingcommunityz.rip/",
+    "category": "Film e serie",
+    "search": "/it/search?q={query}"
+  },
+  {
+    "id": "7movies",
+    "name": "7Movies",
+    "url": "https://7movies.ac/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "altadefinizione",
+    "name": "Altadefinizione",
+    "url": "https://altadefinizionex.surf/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "animeunity",
+    "name": "AnimeUnity",
+    "url": "https://www.animeunity.so/",
+    "category": "Anime",
+    "search": ""
+  },
+  {
+    "id": "animeworld",
+    "name": "AnimeWorld",
+    "url": "https://www.animeworld.ac/",
+    "category": "Anime",
+    "search": ""
+  },
+  {
+    "id": "cb01new",
+    "name": "Cb01New",
+    "url": "https://cb01uno.wiki/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "Cineblog_1",
+    "name": "Cineblog 1",
+    "url": "https://cineblog001.tattoo/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "cinezo",
+    "name": "Cinezo",
+    "url": "https://www.cinezo.org/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "crunchyroll",
+    "name": "Crunchyroll",
+    "url": "https://www.crunchyroll.com/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "dmax",
+    "name": "DMAX",
+    "url": "https://www.dmax.it/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "discoveryplus",
+    "name": "Discovery+",
+    "url": "https://www.discoveryplus.com/it/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "eurostreaming",
+    "name": "Eurostreaming",
+    "url": "https://eurostream.pics/",
+    "category": "Film e serie",
+    "search": "/?s={query}"
+  },
+  {
+    "id": "foodnetwork",
+    "name": "Food Network",
+    "url": "https://www.foodnetwork.it/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "guardaplay",
+    "name": "Guardaplay",
+    "url": "https://guardaplay.info/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "guardoseries",
+    "name": "Guardoseries",
+    "url": "https://guardoseries.shop/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "homegardentv",
+    "name": "HGTV",
+    "url": "https://www.hgtv.it/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "hydrahd",
+    "name": "Hydrahd",
+    "url": "https://hydrahd.ws/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "mappl",
+    "name": "Mappl",
+    "url": "https://mapple.fun/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "mediasetinfinity",
+    "name": "Mediaset Infinity",
+    "url": "https://mediasetinfinity.mediaset.it/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "monochrome",
+    "name": "Monochrome",
+    "url": "https://monochrome.tf/",
+    "category": "Musica",
+    "search": ""
+  },
+  {
+    "id": "nove",
+    "name": "Nove",
+    "url": "https://www.nove.tv/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "plutotv",
+    "name": "Pluto TV",
+    "url": "https://pluto.tv/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "raiplay",
+    "name": "RaiPlay",
+    "url": "https://www.raiplay.it/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "realtime",
+    "name": "Real Time",
+    "url": "https://www.realtimetv.it/",
+    "category": "Film e serie",
+    "search": ""
+  },
+  {
+    "id": "streamingcommunity_2",
+    "name": "Streamingcommunity 2",
+    "url": "https://streamingunity.fun/",
+    "category": "Film e serie",
+    "search": "/it/search?q={query}"
+  },
+  {
+    "id": "toonitalia",
+    "name": "Toonitalia",
+    "url": "https://toonitalia.xyz/",
+    "category": "Anime",
+    "search": ""
+  },
+  {
+    "id": "tubitv",
+    "name": "Tubi",
+    "url": "https://tubitv.com/",
+    "category": "Film e serie",
+    "search": ""
+  }
+]

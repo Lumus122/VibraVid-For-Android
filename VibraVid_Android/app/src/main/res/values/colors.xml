@@ -1,0 +1,9 @@
+<resources>
+    <color name="app_background">#111215</color>
+    <color name="cinema_background">#08090B</color>
+    <color name="app_surface">#1E2025</color>
+    <color name="app_soft">#2B2E35</color>
+    <color name="app_line">#454850</color>
+    <color name="app_text">#F3F2EF</color>
+    <color name="app_muted">#BEC0C6</color>
+</resources>

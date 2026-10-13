@@ -1,0 +1,31 @@
+<resources>
+    <style name="AppTheme" parent="android:style/Theme.Material.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">@color/app_text</item>
+        <item name="android:colorBackground">@color/app_background</item>
+        <item name="android:colorButtonNormal">@color/app_soft</item>
+        <item name="android:textColorPrimary">@color/app_text</item>
+        <item name="android:textColorSecondary">@color/app_muted</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">@color/app_background</item>
+        <item name="android:navigationBarColor">@color/app_background</item>
+        <item name="android:alertDialogTheme">@style/NeutralDialog</item>
+        <item name="android:windowBackground">@drawable/launch_background</item>
+        <item name="android:windowActionModeOverlay">true</item>
+    </style>
+    <style name="NeutralDialog" parent="android:style/Theme.Material.Dialog.Alert">
+        <item name="android:colorAccent">@color/app_text</item>
+        <item name="android:colorBackground">@color/app_surface</item>
+        <item name="android:windowBackground">@color/app_surface</item>
+        <item name="android:textColorPrimary">@color/app_text</item>
+        <item name="android:textColorSecondary">@color/app_muted</item>
+        <item name="android:colorButtonNormal">@color/app_soft</item>
+    </style>
+    <style name="PlayerTheme" parent="android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/cinema_background</item>
+        <item name="android:colorAccent">@color/app_text</item>
+        <item name="android:statusBarColor">@color/cinema_background</item>
+        <item name="android:navigationBarColor">@color/cinema_background</item>
+        <item name="android:alertDialogTheme">@style/NeutralDialog</item>
+    </style>
+</resources>
