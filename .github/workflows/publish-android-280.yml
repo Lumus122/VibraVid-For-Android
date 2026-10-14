@@ -18,7 +18,7 @@ jobs:
           mkdir package
           cd package
           for file in VibraVid_Studio_Android.apk VibraVid_Android_sorgenti.zip VibraVid_Studio_Android.apk.sha256 VibraVid_Android_sorgenti.zip.sha256 notes.md; do
-            gh api "repos/$GITHUB_REPOSITORY/contents/.github/release-2.8.0/$file?ref=$GITHUB_SHA" -H "Accept: application/vnd.github.raw+json" > "$file"
+            curl --fail --location --retry 3 "https://raw.githubusercontent.com/$GITHUB_REPOSITORY/$GITHUB_SHA/.github/release-2.8.0/$file" --output "$file"
           done
           sha256sum -c VibraVid_Studio_Android.apk.sha256
           sha256sum -c VibraVid_Android_sorgenti.zip.sha256
