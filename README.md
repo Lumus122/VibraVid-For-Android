@@ -19,7 +19,7 @@
 
 Versione Android autonoma di **VibraVid Studio**, basata sul progetto [AstraeLabs/VibraVid](https://github.com/AstraeLabs/VibraVid). Ricerca, download e libreria funzionano sul telefono: non serve un PC acceso.
 
-[**Scarica l’APK 2.5.1**](https://github.com/Lumus122/VibraVid-For-Androd/releases/download/v2.5.1-android/VibraVid_Studio_Android.apk) · [Releases](https://github.com/Lumus122/VibraVid-For-Androd/releases) · [Guida d’uso](docs/HOW_TO_USE.md) · [Compilazione](docs/BUILD_ANDROID.md)
+[**Scarica l’APK 2.8.0**](https://github.com/Lumus122/VibraVid-For-Android/releases/download/v2.8.0-android/VibraVid_Studio_Android.apk) · [Releases](https://github.com/Lumus122/VibraVid-For-Android/releases) · [Guida d’uso](docs/HOW_TO_USE.md) · [Compilazione](docs/BUILD_ANDROID.md)
 
 ## Funzionalità
 
@@ -33,7 +33,7 @@ Versione Android autonoma di **VibraVid Studio**, basata sul progetto [AstraeLab
 ## Installazione
 
 1. Serve **Android 8.0 o successivo** e Android System WebView aggiornato.
-2. Scarica `VibraVid_Studio_Android.apk` dalla [release](https://github.com/Lumus122/VibraVid-For-Androd/releases/tag/v2.5.1-android).
+2. Scarica `VibraVid_Studio_Android.apk` dalla [release](https://github.com/Lumus122/VibraVid-For-Android/releases/tag/v2.8.0-android).
 3. Apri il file sul telefono e, se richiesto, consenti al browser o al gestore file di installare l’app.
 4. Se hai già una versione firmata con la stessa chiave, installa l’aggiornamento senza disinstallare: libreria e download vengono conservati.
 
@@ -53,7 +53,7 @@ Gli adattatori Android automatici sono StreamingCommunity, Streamingcommunity 2,
 
 HLS/DASH sono conservati come manifest e tracce nella cache privata dell’app, senza conversione in un MP4 esportabile. Disinstallare l’app elimina libreria e download privati; prima di farlo esporta la libreria.
 
-La release 2.5.1 contiene correzioni di affidabilità, senza nuove funzionalità. Firma, integrità e corrispondenza dei sorgenti sono verificate; 145 controlli sul modello/aspetto e 300 casi grafici sono superati. Le suite native sono state eseguite su build incrementali con un emulatore Android 9. **L’ultima regressione del contatore della cache è stata interrotta prima del completamento e non viene dichiarata superata.** Non sono stati eseguiti test su un telefono fisico. Dettagli e hash in [QA.md](VibraVid_Android/QA.md) e [AUDIT.md](VibraVid_Android/AUDIT.md).
+La release 2.8.0 include i miglioramenti del lettore e della galleria, 21 lingue, domini automatici e aggiornamento dalla repo. Verifiche locali superate: 20 test Android su host, 195 controlli UI e 13.676 controlli delle lingue. Firma e integrità dei pacchetti pubblicati verificate. L’installazione di una futura release e la verifica sul telefono Android 17 beta restano da completare. Risultati e limiti in [QA.md](VibraVid_Android/QA.md).
 
 ## Codice e compilazione
 
@@ -63,7 +63,7 @@ Il codice desktop originale e la storia Git sono conservati dal fork; il [README
 
 ## Contributi e segnalazioni
 
-Consulta [CONTRIBUTING.md](CONTRIBUTING.md) e usa le [Issues](https://github.com/Lumus122/VibraVid-For-Androd/issues) di questo fork per i problemi Android. Indica versione dell’app, versione Android/WebView, passaggi e messaggio d’errore. Le modifiche sono riassunte in [CHANGELOG.md](CHANGELOG.md).
+Consulta [CONTRIBUTING.md](CONTRIBUTING.md) e usa le [Issues](https://github.com/Lumus122/VibraVid-For-Android/issues) di questo fork per i problemi Android. Indica versione dell’app, versione Android/WebView, passaggi e messaggio d’errore. Le modifiche sono riassunte in [CHANGELOG.md](CHANGELOG.md).
 
 ## Crediti e licenze
 

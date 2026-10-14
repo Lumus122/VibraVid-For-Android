@@ -50,3 +50,11 @@ Il filtro usa regole di dominio locali e regole cosmetiche: non è un’estensio
 | L’aggiornamento non si installa | APK con firma diversa o versione precedente: i sorgenti compilati con una nuova chiave non aggiornano l’APK ufficiale. |
 
 Per problemi Android apri una Issue nel fork, riportando versione dell’app, Android/WebView, passaggi e testo dell’errore. Non includere password, cookie, token o URL firmati completi.
+
+
+## Novità Android 2.8.0
+
+- **Lingua** nelle impostazioni: 21 lingue incluse, senza connessione; i titoli e le note restano originali.
+- **Salva video** nel lettore crea una copia in Filmati/VibraVid. Il download nell’app viene conservato.
+- Gli indirizzi vengono aggiornati dall’elenco centrale del progetto PC, conservando le personalizzazioni e l’ultimo elenco quando la rete non risponde.
+- **Update** nelle impostazioni controlla le release GitHub e scarica un APK più nuovo. Firma, versione e integrità vengono verificate prima di proporre l’installazione Android, che richiede la tua conferma.
