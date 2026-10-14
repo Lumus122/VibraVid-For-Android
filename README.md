@@ -9,6 +9,8 @@
 
 # VibraVid-For-Android
 
+**Aggiornamento Android 2.8.0**: nuovo lettore, salvataggio in galleria corretto, 21 lingue, recupero automatico dei domini e pulsante Update dalle release GitHub. [Guida e verifiche](VibraVid_Android/README.md).
+
 
 
 

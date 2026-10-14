@@ -7,8 +7,8 @@ android {
         applicationId 'it.vibravid.studio'
         minSdk 26
         targetSdk 35
-        versionCode 25001
-        versionName '2.5.1-android'
+        versionCode 28000
+        versionName '2.8.0-android'
         testInstrumentationRunner 'it.vibravid.studio.tests.StreamSmoke'
     }
     buildTypes {
@@ -19,14 +19,23 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    testOptions {
+        unitTests.includeAndroidResources = true
+        unitTests.all { systemProperty 'robolectric.dependency.repo.url', 'https://repo.maven.apache.org/maven2' }
+    }
 }
 dependencies {
+    implementation 'androidx.core:core:1.15.0'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.16.1'
     implementation 'org.jsoup:jsoup:1.23.2'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.1.5'
     implementation 'androidx.media3:media3-exoplayer:1.5.1'
     implementation 'androidx.media3:media3-exoplayer-hls:1.5.1'
     implementation 'androidx.media3:media3-exoplayer-dash:1.5.1'
     implementation 'androidx.media3:media3-ui:1.5.1'
+    implementation 'androidx.media3:media3-transformer:1.5.1'
+    implementation 'androidx.media3:media3-muxer:1.5.1'
     implementation 'androidx.media3:media3-database:1.5.1'
     implementation 'androidx.media3:media3-datasource:1.5.1'
 }

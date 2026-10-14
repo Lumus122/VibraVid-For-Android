@@ -71,7 +71,12 @@ public final class ProviderEngine implements AutoCloseable {
         if(chosen.isEmpty())throw new IllegalArgumentException("Questa fonte non ha ancora un adattatore automatico Android.");
         CompletionService<JSONObject> completion=new ExecutorCompletionService<>(catalogWorkers);List<Future<JSONObject>> jobs=new ArrayList<>();
         for(JSONObject source:chosen)jobs.add(completion.submit(()->{
-            try{return new JSONObject().put("items",searchSource(source,query,call)).put("source",source.getString("name"));}
+            try{
+                JSONArray items;
+                try{items=searchSource(source,query,call);}
+                catch(Exception initial){call.check();DomainRefresh.refresh(context,true);call.check();JSONObject renewed=SourceCatalog.find(context,source.getString("id"));if(root(source).equals(root(renewed)))throw initial;items=searchSource(renewed,query,call);}
+                return new JSONObject().put("items",items).put("source",source.getString("name"));
+            }
             catch(Exception error){call.check();return new JSONObject().put("items",new JSONArray()).put("error",source.getString("name")+": "+problem(error));}
         }));
         List<JSONObject> results=new ArrayList<>();JSONArray warnings=new JSONArray();int successful=0;long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(28);

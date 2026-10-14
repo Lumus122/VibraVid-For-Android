@@ -6,7 +6,7 @@ from build_apk import ROOT, JAVA, PLATFORM, TOOLS, SIGN, run
 import os
 import sys
 runner = sys.argv[1] if len(sys.argv)>1 else "AndroidSmoke"
-assert runner in ("AndroidSmoke", "StreamSmoke", "AdBlockSmoke", "ProviderSmoke", "AuditSmoke", "TransportSmoke", "FileFlowSmoke", "PickerSmoke", "QueueSmoke", "ReliabilitySmoke", "AdapterSmoke")
+assert runner in ("AndroidSmoke", "StreamSmoke", "AdBlockSmoke", "ProviderSmoke", "AuditSmoke", "TransportSmoke", "FileFlowSmoke", "PickerSmoke", "QueueSmoke", "ReliabilitySmoke", "AdapterSmoke", "GallerySmoke")
 
 build=ROOT/'build/smoke'
 for name in ('generated','classes','dex'): (build/name).mkdir(parents=True,exist_ok=True)

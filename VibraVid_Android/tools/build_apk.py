@@ -42,7 +42,8 @@ def build():
     if not gradle.exists():
         raise SystemExit('Install Gradle 8.13 in toolchain/gradle-8.13 before building.')
     (ROOT / 'local.properties').write_text('sdk.dir=' + SDK.as_posix().replace(':', '\\:') + '\n', encoding='utf-8')
-    output = run([gradle, '--no-daemon', 'assembleRelease'], env)
+    tasks = ['testReleaseUnitTest', 'lintRelease', 'assembleRelease'] if '--verify' in sys.argv else ['assembleRelease']
+    output = run([gradle, '--no-daemon', *tasks], env)
     (BUILD / 'gradle-build.log').write_text(output, encoding='utf-8')
     unsigned = ROOT / 'app/build/outputs/apk/release/app-release-unsigned.apk'
     aligned = BUILD / 'aligned.apk'

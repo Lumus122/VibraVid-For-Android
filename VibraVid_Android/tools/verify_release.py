@@ -27,7 +27,7 @@ with zipfile.ZipFile(apk) as archive:
     for name,digest in build['sources'].items():
         if name.startswith('assets/'):assert hashlib.sha256(archive.read(name)).hexdigest()==digest
     dex=b''.join(archive.read(name) for name in archive.namelist() if re.fullmatch(r'classes\d*\.dex',name))
-    assert all(name.encode('ascii') not in dex for name in ('AuditSmoke','ProviderSmoke','PickerSmoke','StreamSmoke','AndroidSmoke','TransportSmoke','FileFlowSmoke','AdBlockSmoke','QueueSmoke','ReliabilitySmoke','AdapterSmoke','ui_fixture','qa-fixture'))
+    assert all(name.encode('ascii') not in dex for name in ('AuditSmoke','ProviderSmoke','PickerSmoke','StreamSmoke','AndroidSmoke','TransportSmoke','FileFlowSmoke','AdBlockSmoke','QueueSmoke','ReliabilitySmoke','AdapterSmoke','GallerySmoke','GallerySaveTest','GalleryMuxerTest','LanguageTest','UpdateTest','ui_fixture','qa-fixture'))
 env=os.environ.copy();env['JAVA_HOME']=str(JAVA);env['PATH']=str(JAVA/'bin')+os.pathsep+env.get('PATH','')
 current=run([TOOLS/'apksigner.bat','verify','--verbose','--print-certs',apk],env)
 certificate=lambda text:re.search(r'certificate SHA-256 digest: ([a-f0-9]+)',text).group(1)

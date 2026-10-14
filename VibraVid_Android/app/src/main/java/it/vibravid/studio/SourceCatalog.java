@@ -36,11 +36,12 @@ public final class SourceCatalog {
             throw new IllegalArgumentException("Inserisci un indirizzo HTTPS completo, senza credenziali.");
         return uri.normalizeScheme();
     }
-    public static void update(Context context,String id,String url)throws Exception{
+    public static synchronized void update(Context context,String id,String url)throws Exception{
         find(context,id);String valid=https(url==null?null:url.trim()).toString();
         if(!context.getSharedPreferences("sources",Context.MODE_PRIVATE).edit().putString(id,valid).commit())throw new IOException("Salvataggio non riuscito");
+        context.getSharedPreferences("sources_manual",0).edit().putBoolean(id,true).commit();
     }
-    public static int importDomains(Context context,JSONObject input)throws Exception{
+    public static synchronized int importDomains(Context context,JSONObject input)throws Exception{
         Map<String,String> changes=new HashMap<>();JSONArray known=list(context);
         for(int i=0;i<known.length();i++){
             String id=known.getJSONObject(i).getString("id");JSONObject block=input.optJSONObject(id);
@@ -49,6 +50,6 @@ public final class SourceCatalog {
         if(changes.isEmpty())throw new IllegalArgumentException("Nel file non ci sono indirizzi delle fonti VibraVid.");
         android.content.SharedPreferences.Editor editor=context.getSharedPreferences("sources",Context.MODE_PRIVATE).edit();
         for(Map.Entry<String,String> entry:changes.entrySet())editor.putString(entry.getKey(),entry.getValue());
-        if(!editor.commit())throw new IOException("Salvataggio non riuscito");return changes.size();
+        if(!editor.commit())throw new IOException("Salvataggio non riuscito");android.content.SharedPreferences.Editor manual=context.getSharedPreferences("sources_manual",0).edit();for(String id:changes.keySet())manual.putBoolean(id,true);manual.commit();return changes.size();
     }
 }

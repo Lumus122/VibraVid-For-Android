@@ -1,8 +1,42 @@
-# Revisione completa Android 2.5.1
+# Android 2.8.0 — domini automatici e Update
+
+Gli indirizzi delle fonti vengono sincronizzati in background all’avvio/ritorno nell’app, al massimo una volta all’ora, dall’endpoint usato dal PC: `https://domains-tracker.server66.workers.dev/get`. Se una ricerca fallisce, viene tentato un aggiornamento e una sola nuova ricerca quando l’indirizzo è cambiato. I tentativi sono limitati ad almeno trenta secondi di distanza; senza rete o con servizio indisponibile rimane l’ultimo elenco salvato. Non si indovinano estensioni casuali. Solo fonti note e indirizzi HTTPS validi vengono accettati. Gli indirizzi modificati esplicitamente o importati dall’utente sono conservati come personalizzazioni. La fonte centrale deve conoscere il dominio nuovo; la disponibilità di ogni sito non è garantita.
+
+**Impostazioni → Update** controlla le ultime venti release pubblicate di `Lumus122/VibraVid-For-Android`, ignora bozze/prerelease e seleziona il pacchetto Android stabile più recente. Se è più nuovo, avvia il download con il gestore Android; alla conclusione, o riaprendo l’app, verifica dimensione, hash GitHub quando presente, identificativo dell’app, versionCode crescente e identità della firma. L’installazione usa la schermata Android e richiede la conferma dell’utente. Se necessario Android offre il permesso per installare da questa app; rifiutandolo non viene aperta ripetutamente la richiesta. Tocca nuovamente Update per riprovare. Nessuna installazione silenziosa, nessun caricamento sulla repo dal telefono.
+
+La repo osservata contieneva ancora `v2.5.1-android`: il comando considera correttamente 2.8.0 già aggiornata finché non viene pubblicato un APK più nuovo. Pubblicazione solo dopo il consenso del proprietario. La prova dell’installazione completa di una release successiva su telefono resta da effettuare: non esisteva una release più nuova da installare durante questa verifica.
+
+---
+
+# VibraVid Android 2.7.0 — galleria e lingue
+
+Correzione del percorso **Salva → Salva video** nel lettore. Su Android 10+ il file viene creato nel volume concreto `external_primary` e pubblicato rimuovendo `IS_PENDING`; durata e dimensioni vengono lette dal servizio multimediale di Android. Su Android 8–9 resta il salvataggio nella cartella pubblica con il permesso di scrittura. Le copie incomplete vengono rimosse, quelle pubblicate conservate.
+
+La creazione dell’MP4 usa Media3 InAppMuxer 1.5.1. Il servizio dichiara anche `mediaProcessing`, lo usa esplicitamente su API 35+, e mantiene `dataSync` sulle versioni precedenti. Errori di avvio, permessi, notifiche e spazio insufficiente vengono gestiti con uno stato leggibile; il video originale non viene rimosso. L’annullamento viene elaborato anche quando il servizio è occupato.
+
+**Impostazioni → Lingua**: italiano, inglese, spagnolo, portoghese, francese, tedesco, olandese, polacco, rumeno, ucraino, russo, turco, arabo, hindi, bengalese, cinese semplificato, giapponese, coreano, indonesiano, vietnamita e thailandese. Italiano predefinito, selezione persistente, cataloghi inclusi e uso senza rete. La lingua interessa interfaccia, controlli del lettore, finestre native e messaggi; non cambia l’audio dei film. Arabo con direzione da destra a sinistra; la barra temporale conserva la direzione cronologica. Titoli, note, percorsi, URL e contenuti delle fonti restano originali. I testi estesi sono bozze tradotte automaticamente; le principali etichette e la terminologia galleria/aspetto sono state riviste, ma non si dichiara una revisione linguistica professionale completa.
+
+Verifiche misurate e limiti in QA.md. La pubblicazione su GitHub resta soggetta alla conferma dell’utente.
+
+---
+
+# Lettore e galleria Android 2.6.0
+
+Aggiornamento circoscritto a VideoActivity, CinemaControls, GalleryExportService, GalleryWriter, manifest e dipendenza Media3 Transformer 1.5.1. Il bridge delle impostazioni ora conserva anche il movimento ridotto per i controlli nativi. Non vengono modificati cataloghi, adattatori, libreria, layout, palette o codice Windows.
+
+Il lettore conserva ripresa della posizione, gestione del focus audio, segnalazione e riparazione dei download incompleti e distinzione fra pausa dell'utente e pausa del lifecycle. Mantiene Picture-in-Picture e usa la factory priva di upstream per i download completati. I controlli verificano durata sconosciuta, fine del video, assenza di tracce alternative e funzionalità PiP del dispositivo. Timer, listener e dialoghi vengono rimossi o chiusi con l'attività.
+
+La galleria usa MediaStore con IS_PENDING su Android 10+ e scrittura nella cartella pubblica Movies/VibraVid, previo permesso, su Android 8–9. Un buffer limitato copia i dati fuori dal thread UI. I video adattivi passano a Transformer tramite la medesima factory solo-cache. L'esportazione pubblica una copia solo dopo la verifica di una traccia video leggibile; registra durata e dimensioni. Annullamento e pubblicazione finale sono coordinati; le scritture sono serializzate, le copie parziali vengono rimosse e quelle interrotte da un arresto del processo vengono recuperate al salvataggio successivo. Il recupero conserva i file già pubblicati e limita i percorsi alla cartella prevista.
+
+Le prove native, l'hash del pacchetto verificato, il controllo statico e i limiti sono riportati in apertura di QA.md. Non è una certificazione di assenza assoluta di bug su ogni telefono. La pubblicazione su GitHub richiede l'approvazione dell'utente; questo aggiornamento è preparato localmente.
+
+---
+
+# Revisione completa Android 2.5.1 — storico
 
 Revisione di tutte le undici classi Java applicative e di ogni funzione di app.js, model.js e cosmetic.js; lettura integrale di HTML, CSS, manifest, risorse, configurazione, fonti e strumenti di compilazione/verifica. Dipendenze esterne e font binari verificati per presenza, licenze e integrità: non viene dichiarata una revisione dell'intero codice Android o Media3.
 
-Nessuna nuova funzione di prodotto. Conservati ricerca/download diretti, browser con AD, libreria, Serata, import/export, video locali, lettore, dieci layout e dieci palette; poster sempre a colori. La versione Windows non è stata modificata. La pubblicazione del fork è successiva alla revisione applicativa.
+Nessuna nuova funzione di prodotto. Conservati ricerca/download diretti, browser con AD, libreria, Serata, import/export, video locali, lettore, dieci layout e dieci palette; poster sempre a colori. La versione Windows non è stata modificata. Nessun commit, push o pubblicazione eseguito.
 
 | Problema | Correzione |
 | --- | --- |

@@ -197,3 +197,9 @@ progress::-webkit-progress-bar{background:var(--soft);border-radius:6px}progress
 @media(min-width:600px){.layout-choices,.palette-choices{grid-template-columns:1fr 1fr}.appearance-panel{padding:26px}:root[data-layout=compact] .poster-grid{grid-template-columns:repeat(4,minmax(0,1fr))}:root[data-layout=posters] .poster-grid{grid-template-columns:1fr 1fr}:root[data-layout=list] .source-grid{grid-template-columns:1fr 1fr}}
 @media(min-width:900px){:root[data-layout=compact] .poster-grid{grid-template-columns:repeat(5,minmax(0,1fr))}:root[data-layout=posters] .poster-grid{grid-template-columns:repeat(3,minmax(0,1fr))}:root[data-layout=panels] .poster-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:350px){.appearance-panel{padding:14px}.appearance-choice{gap:9px;padding:10px}:root[data-layout=posters] .provider-result{grid-template-columns:100px minmax(0,1fr);gap:14px}}
+/* Language labels remain readable at small widths and in right-to-left locales. */
+.language-setting { gap: 16px; align-items: center; }
+.language-setting > div { min-width: 0; flex: 1; }
+.language-setting select { max-width: 48%; min-width: 115px; padding: 12px 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--raised); color: var(--ink); font: inherit; }
+.language-setting select:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+[dir="rtl"] .page-intro, [dir="rtl"] .card-copy, [dir="rtl"] .setting, [dir="rtl"] .quiet-card { text-align: start; }

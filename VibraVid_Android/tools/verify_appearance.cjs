@@ -11,7 +11,7 @@ test('Existing installations retain cinema, motion, Wi-Fi and all library data',
  let old=M.add(M.empty(),{name:'Una storia',year:2024,notes:'Le mie note',rating:4,collection_name:'Preferiti'}).data;
  old.preferences={theme:'cinema',reducedMotion:true,wifiOnly:true};
  const next=M.hydrate(old);assert.deepEqual(next.items,old.items);assert.deepEqual(next.collections,old.collections);
- assert.deepEqual(next.preferences,{theme:'cinema',layout:'classic',palette:'graphite',reducedMotion:true,wifiOnly:true});
+ assert.deepEqual(next.preferences,{theme:'cinema',layout:'classic',palette:'graphite',language:'it',reducedMotion:true,wifiOnly:true});
 });
 test('Unknown and malformed appearance values safely fall back',()=>{
  for(const value of [null,'unknown',42,{},['list'],'<script>']){

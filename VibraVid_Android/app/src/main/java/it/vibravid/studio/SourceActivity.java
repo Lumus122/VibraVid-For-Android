@@ -41,25 +41,27 @@ public final class SourceActivity extends Activity {
     private Typeface body;
     private final Set<AlertDialog> dialogs=new HashSet<>();
 
+    @Override protected void attachBaseContext(android.content.Context base){super.attachBaseContext(AppLanguage.context(base));}
+
     @Override public void onCreate(Bundle saved){
         super.onCreate(saved);
         try{provider=SourceCatalog.find(this,getIntent().getStringExtra("source"));SourceCatalog.https(provider.getString("url"));}
-        catch(Exception e){Toast.makeText(this,"La fonte non è valida. Controlla il suo indirizzo nelle Impostazioni.",Toast.LENGTH_LONG).show();finish();return;}
+        catch(Exception e){Toast.makeText(this,AppLanguage.text(SourceActivity.this,"La fonte non è valida. Controlla il suo indirizzo nelle Impostazioni."),Toast.LENGTH_LONG).show();finish();return;}
         adBlockEnabled=getSharedPreferences("source_browser",MODE_PRIVATE).getBoolean("adblock:"+provider.optString("id"),true);
         body=Typeface.createFromAsset(getAssets(),"fonts/nunito-sans.ttf");
         layout=new LinearLayout(this);layout.setOrientation(LinearLayout.VERTICAL);layout.setBackgroundColor(getColor(getSharedPreferences("appearance",0).getBoolean("cinema",false)?R.color.cinema_background:R.color.app_background));
         layout.setOnApplyWindowInsetsListener((view,insets)->{view.setPadding(insets.getSystemWindowInsetLeft(),insets.getSystemWindowInsetTop(),insets.getSystemWindowInsetRight(),insets.getSystemWindowInsetBottom());return insets.consumeSystemWindowInsets();});
         LinearLayout header=new LinearLayout(this);header.setGravity(Gravity.CENTER_VERTICAL);header.setPadding(dp(8),dp(6),dp(10),dp(6));
-        Button back=button("‹");back.setTextSize(25);back.setContentDescription("Torna a VibraVid");back.setOnClickListener(v->finish());header.addView(back,new LinearLayout.LayoutParams(dp(45),dp(45)));
+        Button back=button("‹");back.setTextSize(25);back.setContentDescription(AppLanguage.text(SourceActivity.this,"Torna a VibraVid"));back.setOnClickListener(v->finish());header.addView(back,new LinearLayout.LayoutParams(dp(45),dp(45)));
         title=new TextView(this);title.setText(provider.optString("name"));title.setTypeface(body,Typeface.BOLD);title.setTextColor(getColor(R.color.app_text));title.setTextSize(18);title.setMaxLines(2);
         header.addView(title,new LinearLayout.LayoutParams(0,-2,1));
-        adblock=button("AD");adblock.setTextSize(12);adblock.setPadding(0,0,0,0);adblock.setMinWidth(0);adblock.setMinimumWidth(0);adblock.setMaxLines(2);adblock.setEnabled(false);adblock.setContentDescription("Caricamento blocco pubblicità");adblock.setOnClickListener(v->showProtection());
+        adblock=button("AD");adblock.setTextSize(12);adblock.setPadding(0,0,0,0);adblock.setMinWidth(0);adblock.setMinimumWidth(0);adblock.setMaxLines(2);adblock.setEnabled(false);adblock.setContentDescription(AppLanguage.text(SourceActivity.this,"Caricamento blocco pubblicità"));adblock.setOnClickListener(v->showProtection());
         header.addView(adblock,new LinearLayout.LayoutParams(dp(54),dp(45)));
-        Button refresh=button("↻");refresh.setContentDescription("Ricarica la fonte");refresh.setOnClickListener(v->{if(browser==null){recreate();return;}clearVideos();browser.reload();});header.addView(refresh,new LinearLayout.LayoutParams(dp(45),dp(45)));
+        Button refresh=button("↻");refresh.setContentDescription(AppLanguage.text(SourceActivity.this,"Ricarica la fonte"));refresh.setOnClickListener(v->{if(browser==null){recreate();return;}clearVideos();browser.reload();});header.addView(refresh,new LinearLayout.LayoutParams(dp(45),dp(45)));
         layout.addView(header);
         content=new FrameLayout(this);browser=new WebView(this);content.addView(browser,new FrameLayout.LayoutParams(-1,-1));layout.addView(content,new LinearLayout.LayoutParams(-1,0,1));
         LinearLayout footer=new LinearLayout(this);footer.setOrientation(LinearLayout.VERTICAL);footer.setPadding(dp(16),dp(10),dp(16),dp(12));
-        status=new TextView(this);status.setTypeface(body);status.setTextSize(13);status.setTextColor(getColor(R.color.app_muted));status.setText("Apri il titolo e avvia il suo player. Qui comparirà il video da scaricare.");footer.addView(status);
+        status=new TextView(this);status.setTypeface(body);status.setTextSize(13);status.setTextColor(getColor(R.color.app_muted));status.setText(AppLanguage.text(SourceActivity.this,"Apri il titolo e avvia il suo player. Qui comparirà il video da scaricare."));footer.addView(status);
         download=button("In attesa del video…");download.setBackgroundTintList(new android.content.res.ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled},new int[]{}},new int[]{getColor(R.color.app_text),getColor(R.color.app_line)}));download.setTextColor(new android.content.res.ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled},new int[]{}},new int[]{getColor(R.color.app_background),getColor(R.color.app_text)}));download.setEnabled(false);download.setOnClickListener(v->chooseVideo());
         LinearLayout.LayoutParams action=new LinearLayout.LayoutParams(-1,dp(50));action.topMargin=dp(8);footer.addView(download,action);layout.addView(footer);setContentView(layout);layout.requestApplyInsets();getWindow().setStatusBarColor(getColor(R.color.app_background));getWindow().setNavigationBarColor(getColor(R.color.app_background));
         WebSettings settings=browser.getSettings();settings.setJavaScriptEnabled(true);settings.setDomStorageEnabled(true);settings.setAllowFileAccess(false);settings.setAllowContentAccess(false);
@@ -82,7 +84,7 @@ public final class SourceActivity extends Activity {
                 String type=MediaDetector.type(url,null);
                 if(type!=null)capture(url,type,request.getRequestHeaders());return null;
             }
-            @Override public void onPageStarted(WebView view,String url,android.graphics.Bitmap favicon){blockedRequests.set(0);updateProtectionButton();clearVideos();status.setText("Apri il titolo e avvia il player per rilevare il video.");}
+            @Override public void onPageStarted(WebView view,String url,android.graphics.Bitmap favicon){blockedRequests.set(0);updateProtectionButton();clearVideos();status.setText(AppLanguage.text(SourceActivity.this,"Apri il titolo e avvia il player per rilevare il video."));}
             @Override public void onPageCommitVisible(WebView view,String url){applyCosmeticFilter();}
             @Override public void onPageFinished(WebView view,String url){applyCosmeticFilter();CookieManager.getInstance().flush();}
             @Override public boolean shouldOverrideUrlLoading(WebView view,WebResourceRequest request){
@@ -94,15 +96,15 @@ public final class SourceActivity extends Activity {
                 }
                 return false;
             }
-            @Override public void onReceivedError(WebView view,WebResourceRequest request,WebResourceError error){if(request.isForMainFrame())status.setText("La fonte non si apre. Verifica la connessione o aggiorna il suo indirizzo nelle Impostazioni.");}
+            @Override public void onReceivedError(WebView view,WebResourceRequest request,WebResourceError error){if(request.isForMainFrame())status.setText(AppLanguage.text(SourceActivity.this,"La fonte non si apre. Verifica la connessione o aggiorna il suo indirizzo nelle Impostazioni."));}
             @Override public boolean onRenderProcessGone(WebView view,RenderProcessGoneDetail detail){
-                if(view!=browser)return true;hideFullscreen();browser=null;content.removeView(view);view.destroy();videos.clear();download.setEnabled(false);download.setText("In attesa del video…");
-                status.setText("Android ha chiuso il browser della fonte. Tocca Ricarica per riaprirlo. I download salvati restano disponibili.");return true;
+                if(view!=browser)return true;hideFullscreen();browser=null;content.removeView(view);view.destroy();videos.clear();download.setEnabled(false);download.setText(AppLanguage.text(SourceActivity.this,"In attesa del video…"));
+                status.setText(AppLanguage.text(SourceActivity.this,"Android ha chiuso il browser della fonte. Tocca Ricarica per riaprirlo. I download salvati restano disponibili."));return true;
             }
         });
         browser.setDownloadListener((url,agent,disposition,mime,length)->{
             if(adBlockEnabled&&blocker!=null&&blocker.blocks(url)){recordBlocked();return;}
-            String type=MediaDetector.type(url,mime);if(type==null){status.setText("Questo collegamento non è un video supportato.");return;}
+            String type=MediaDetector.type(url,mime);if(type==null){status.setText(AppLanguage.text(SourceActivity.this,"Questo collegamento non è un video supportato."));return;}
             Map<String,String> headers=new HashMap<>();headers.put("User-Agent",agent);String page=browser.getUrl();if(page!=null)headers.put("Referer",page);capture(url,type,headers);chooseVideo();
         });
         String url=provider.optString("url"),query=getIntent().getStringExtra("query"),template=provider.optString("search");
@@ -110,8 +112,8 @@ public final class SourceActivity extends Activity {
         // Read the bundled rules off the UI thread, before any source requests.
         final String firstUrl;
         try{firstUrl=SourceCatalog.https(url).toString();}
-        catch(IllegalArgumentException error){status.setText("L’indirizzo di ricerca della fonte non è valido o è troppo lungo. Torna a VibraVid e aggiorna l’indirizzo della fonte.");return;}
-        status.setText("Preparo il blocco pubblicità…");
+        catch(IllegalArgumentException error){status.setText(AppLanguage.text(SourceActivity.this,"L’indirizzo di ricerca della fonte non è valido o è troppo lungo. Torna a VibraVid e aggiorna l’indirizzo della fonte."));return;}
+        status.setText(AppLanguage.text(SourceActivity.this,"Preparo il blocco pubblicità…"));
         new Thread(()->{
             AdBlocker loaded=null;String script=null;
             try{
@@ -133,17 +135,17 @@ public final class SourceActivity extends Activity {
     }
     private void recordBlocked(){if(closed)return;blockedRequests.incrementAndGet();ui.removeCallbacks(refreshProtection);ui.postDelayed(refreshProtection,120);}
     private void updateProtectionButton(){
-        int count=blockedRequests.get();adblock.setText(!protectionReady?"AD\n!":adBlockEnabled?"AD\n"+(count>999?"999+":count):"AD\nOFF");
-        adblock.setContentDescription(!protectionReady?"Blocco pubblicità non disponibile":adBlockEnabled?"Blocco pubblicità attivo. "+count+" richieste bloccate. Tocca per le opzioni.":"Blocco pubblicità disattivato per questa fonte. Tocca per attivarlo.");
+        int count=blockedRequests.get();adblock.setText(AppLanguage.text(SourceActivity.this,!protectionReady?"AD\n!":adBlockEnabled?"AD\n"+(count>999?"999+":count):"AD\nOFF"));
+        adblock.setContentDescription(AppLanguage.text(SourceActivity.this,!protectionReady?"Blocco pubblicità non disponibile":adBlockEnabled?"Blocco pubblicità attivo. "+count+" richieste bloccate. Tocca per le opzioni.":"Blocco pubblicità disattivato per questa fonte. Tocca per attivarlo."));
         adblock.setBackgroundTintList(android.content.res.ColorStateList.valueOf(getColor(adBlockEnabled?R.color.app_text:R.color.app_soft)));adblock.setTextColor(getColor(adBlockEnabled?R.color.app_background:R.color.app_text));
     }
     private void applyCosmeticFilter(){if(adBlockEnabled&&cosmeticScript!=null&&!closed&&browser!=null)browser.evaluateJavascript(cosmeticScript,null);}
     private void showProtection(){
-        if(!protectionReady){showDialog(new AlertDialog.Builder(this).setTitle("Blocco pubblicità").setMessage("I filtri non sono disponibili. Riapri la fonte per riprovare.").setPositiveButton("Chiudi",null).create());return;}
-        showDialog(new AlertDialog.Builder(this).setTitle("Blocco pubblicità")
-            .setMessage((adBlockEnabled?"Attivo · "+blockedRequests.get()+" richieste o nuove finestre bloccate in questa pagina.":"Disattivato per "+provider.optString("name")+".")+"\n\nFiltra domini pubblicitari e di tracciamento, nasconde i banner più comuni e blocca le nuove finestre. Se il player non funziona, puoi disattivarlo solo su questa fonte. La pagina verrà ricaricata.")
-            .setPositiveButton(adBlockEnabled?"Disattiva su questa fonte":"Attiva su questa fonte",(dialog,which)->setAdBlockEnabled(!adBlockEnabled))
-            .setNegativeButton("Chiudi",null).create());
+        if(!protectionReady){showDialog(new AlertDialog.Builder(this).setTitle(AppLanguage.text(SourceActivity.this,"Blocco pubblicità")).setMessage(AppLanguage.text(SourceActivity.this,"I filtri non sono disponibili. Riapri la fonte per riprovare.")).setPositiveButton(AppLanguage.text(SourceActivity.this,"Chiudi"),null).create());return;}
+        showDialog(new AlertDialog.Builder(this).setTitle(AppLanguage.text(SourceActivity.this,"Blocco pubblicità"))
+            .setMessage(AppLanguage.text(SourceActivity.this,(adBlockEnabled?"Attivo · "+blockedRequests.get()+" richieste o nuove finestre bloccate in questa pagina.":"Disattivato per "+provider.optString("name")+".")+"\n\nFiltra domini pubblicitari e di tracciamento, nasconde i banner più comuni e blocca le nuove finestre. Se il player non funziona, puoi disattivarlo solo su questa fonte. La pagina verrà ricaricata."))
+            .setPositiveButton(AppLanguage.text(SourceActivity.this,adBlockEnabled?"Disattiva su questa fonte":"Attiva su questa fonte"),(dialog,which)->setAdBlockEnabled(!adBlockEnabled))
+            .setNegativeButton(AppLanguage.text(SourceActivity.this,"Chiudi"),null).create());
     }
     private void setAdBlockEnabled(boolean enabled){
         adBlockEnabled=enabled;getSharedPreferences("source_browser",MODE_PRIVATE).edit().putBoolean("adblock:"+provider.optString("id"),enabled).apply();
@@ -161,41 +163,41 @@ public final class SourceActivity extends Activity {
                 JSONObject candidate=new JSONObject().put("url",url).put("mime",mime).put("headers",copied).put("source",provider.getString("name"))
                     .put("sourcePage",browser.getUrl()==null?provider.getString("url"):browser.getUrl());
                 videos.remove(url);videos.put(url,candidate);while(videos.size()>12)videos.remove(videos.keySet().iterator().next());
-                status.setText(videos.size()==1?"Video rilevato. Puoi salvarlo sul telefono.":videos.size()+" flussi rilevati. Scegli quello del film.");download.setEnabled(true);download.setText("Scarica il video");
+                status.setText(AppLanguage.text(SourceActivity.this,videos.size()==1?"Video rilevato. Puoi salvarlo sul telefono.":videos.size()+" flussi rilevati. Scegli quello del film."));download.setEnabled(true);download.setText(AppLanguage.text(SourceActivity.this,"Scarica il video"));
             }catch(Exception ignored){}
         });
     }
-    private void clearVideos(){runOnUiThread(()->{if(preparing)return;videos.clear();download.setEnabled(false);download.setText("In attesa del video…");});}
+    private void clearVideos(){runOnUiThread(()->{if(preparing)return;videos.clear();download.setEnabled(false);download.setText(AppLanguage.text(SourceActivity.this,"In attesa del video…"));});}
     private void chooseVideo(){
         if(videos.isEmpty()||preparing)return;
         List<JSONObject> choices=new ArrayList<>(videos.values());Collections.reverse(choices);choices.sort((a,b)->Boolean.compare(a.optString("mime").startsWith("video/"),b.optString("mime").startsWith("video/")));
         if(choices.size()==1){confirm(choices.get(0));return;}
         String[] labels=new String[choices.size()];for(int i=0;i<labels.length;i++){JSONObject choice=choices.get(i);Uri uri=Uri.parse(choice.optString("url"));labels[i]=MediaDetector.label(choice.optString("mime"))+" · "+uri.getHost()+"\n"+uri.getLastPathSegment();}
-        showDialog(new AlertDialog.Builder(this).setTitle("Quale video scarichiamo?").setItems(labels,(dialog,index)->confirm(choices.get(index))).setNegativeButton("Indietro",null).create());
+        showDialog(new AlertDialog.Builder(this).setTitle(AppLanguage.text(SourceActivity.this,"Quale video scarichiamo?")).setItems(labels,(dialog,index)->confirm(choices.get(index))).setNegativeButton(AppLanguage.text(SourceActivity.this,"Indietro"),null).create());
     }
     private void confirm(JSONObject candidate){
         if(closed||browser==null||isFinishing())return;
         LinearLayout form=new LinearLayout(this);form.setOrientation(LinearLayout.VERTICAL);form.setPadding(dp(22),dp(12),dp(22),dp(4));
         EditText name=new EditText(this);name.setTypeface(body);String suggested=browser.getTitle();if(suggested==null||suggested.length()>180)suggested=provider.optString("name")+" · Video";name.setText(suggested);name.setSingleLine(true);name.setTextColor(getColor(R.color.app_text));form.addView(name);
-        TextView label=new TextView(this);label.setTypeface(body);label.setText("Qualità massima (se disponibile)");label.setPadding(0,dp(14),0,0);form.addView(label);
+        TextView label=new TextView(this);label.setTypeface(body);label.setText(AppLanguage.text(SourceActivity.this,"Qualità massima (se disponibile)"));label.setPadding(0,dp(14),0,0);form.addView(label);
         Spinner quality=new Spinner(this);quality.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,new String[]{"720p","1080p","480p"}));form.addView(quality);
         TextView hint=new TextView(this);hint.setTypeface(body);hint.setTextSize(13);hint.setText("Video e audio italiano vengono scelti quando disponibili. HLS/DASH vengono salvati offline nell’app; i contenuti DRM richiedono la licenza del servizio.");hint.setPadding(0,dp(10),0,dp(10));form.addView(hint);
-        AlertDialog dialog=new AlertDialog.Builder(this).setTitle("Scarica sul telefono").setView(form).setNegativeButton("Annulla",null).setPositiveButton("Scarica",null).create();
+        AlertDialog dialog=new AlertDialog.Builder(this).setTitle(AppLanguage.text(SourceActivity.this,"Scarica sul telefono")).setView(form).setNegativeButton(AppLanguage.text(SourceActivity.this,"Annulla"),null).setPositiveButton(AppLanguage.text(SourceActivity.this,"Scarica"),null).create();
         dialog.setOnShowListener(ignored->dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view->{
             try{
                 String title=name.getText().toString().trim();if(title.isEmpty()||title.length()>180){name.setError("Inserisci un nome fino a 180 caratteri");return;}
                 JSONObject payload=new JSONObject(candidate.toString()).put("name",title).put("quality",new int[]{720,1080,480}[quality.getSelectedItemPosition()]);
-                dialog.dismiss();preparing=true;download.setEnabled(false);download.setText("Preparo il download…");status.setText("Leggo le tracce del film. Non è ancora un download completato.");
+                dialog.dismiss();preparing=true;download.setEnabled(false);download.setText(AppLanguage.text(SourceActivity.this,"Preparo il download…"));status.setText(AppLanguage.text(SourceActivity.this,"Leggo le tracce del film. Non è ancora un download completato."));
                 MediaEngine.get(this).requirements(getSharedPreferences("offline",0).getBoolean("wifiOnly",false));
                 helper=MediaEngine.get(this).enqueue(payload,new MediaEngine.Callback(){
                     @Override public void success(String id){helper=null;preparing=false;if(closed)return;setResult(RESULT_OK,new Intent().putExtra("download",id));finish();}
-                    @Override public void failure(String message){helper=null;preparing=false;if(closed)return;download.setEnabled(!videos.isEmpty());download.setText("Riprova il download");status.setText(message);}
+                    @Override public void failure(String message){helper=null;preparing=false;if(closed)return;download.setEnabled(!videos.isEmpty());download.setText(AppLanguage.text(SourceActivity.this,"Riprova il download"));status.setText(AppLanguage.text(SourceActivity.this,message));}
                 });
-            }catch(Exception e){preparing=false;download.setEnabled(true);download.setText("Riprova il download");status.setText(MediaEngine.message(e));}
+            }catch(Exception e){preparing=false;download.setEnabled(true);download.setText(AppLanguage.text(SourceActivity.this,"Riprova il download"));status.setText(AppLanguage.text(this,MediaEngine.message(e)));}
         }));showDialog(dialog);
     }
     private void showDialog(AlertDialog dialog){if(closed||isFinishing())return;dialogs.add(dialog);dialog.setOnDismissListener(ignored->dialogs.remove(dialog));dialog.show();}
-    private Button button(String text){Button button=new Button(this);button.setText(text);button.setTypeface(body,Typeface.BOLD);button.setAllCaps(false);button.setTextColor(getColor(R.color.app_text));button.setBackgroundTintList(android.content.res.ColorStateList.valueOf(getColor(R.color.app_soft)));return button;}
+    private Button button(String text){Button button=new Button(this);button.setText(AppLanguage.text(this,text));button.setTypeface(body,Typeface.BOLD);button.setAllCaps(false);button.setTextColor(getColor(R.color.app_text));button.setBackgroundTintList(android.content.res.ColorStateList.valueOf(getColor(R.color.app_soft)));return button;}
     private int dp(int value){return Math.round(getResources().getDisplayMetrics().density*value);}
     private void hideFullscreen(){if(fullscreen!=null){content.removeView(fullscreen);fullscreen=null;if(browser!=null)browser.setVisibility(View.VISIBLE);if(fullscreenCallback!=null)fullscreenCallback.onCustomViewHidden();fullscreenCallback=null;}}
     @Override public void onBackPressed(){if(fullscreen!=null){hideFullscreen();return;}if(browser!=null&&browser.canGoBack()){browser.goBack();return;}super.onBackPressed();}

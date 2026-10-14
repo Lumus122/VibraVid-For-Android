@@ -1,4 +1,12 @@
-# VibraVid Studio Android 2.5.0
+# Lettore cinematografico — Android 2.6.0
+
+Il video occupa l'intera superficie, con proporzioni originali o riempimento a scelta. I colori dei contenuti restano originali. La cornice usa nero, bianco e grigi neutri; sfumature trasparenti proteggono la leggibilità dei comandi senza coprire l'immagine. Nunito Sans locale, icone vettoriali disegnate nativamente, bersagli di tocco di almeno 48 dp, tempo trascorso e rimanente e una gerarchia chiara fra titolo, azione principale e comandi secondari. Nessun logo o asset Netflix è incorporato.
+
+I comandi restano visibili in pausa e scompaiono durante la riproduzione. Un tocco li richiama; doppio tocco e scorrimenti verticali velocizzano le azioni frequenti. Il lucchetto previene tocchi accidentali e conserva un accesso esplicito allo sblocco. Le barre di sistema vengono nascoste, mentre gli eventuali insets sono applicati alla cornice e non al video. La disposizione si adatta a verticale e orizzontale; in spazi bassi i comandi secondari mostrano le sole icone, con descrizioni accessibili complete.
+
+Il salvataggio in galleria richiede una conferma e mostra avanzamento, esito e annullamento. Usa una copia, conserva il download e continua in un servizio in primo piano. Il movimento ridotto disattiva le dissolvenze. Timer e riferimenti vengono rilasciati quando il lettore lascia il primo piano; shader e tracciati delle icone sono riutilizzati invece di essere riallocati a ogni disegno.
+
+## Aspetto dell'app — versione 2.5.0, conservato
 
 Il brief richiede dieci layout dell'intera interfaccia e dieci palette, anche chiare. La prima apertura resta Classico/Grafite: nero, grigio e perla. Le scelte sono indipendenti e persistenti; tutte le locandine restano a colori. I cinque identificatori precedenti restano validi, inclusa la scelta posters, ora chiamata Panoramico.
 

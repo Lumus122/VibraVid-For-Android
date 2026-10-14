@@ -101,7 +101,8 @@
       image_source: url(row.image_source || ''), image_credit: text(row.image_credit || '', 1000)
     };
   }
-  function empty() { return {version: 1, items: [], collections: [], preferences: {theme: 'light', layout:'classic', palette:'graphite', reducedMotion: false, wifiOnly: false}, recent: [], files: []}; }
+  const languages=['it','en','es','pt','fr','de','nl','pl','ro','uk','ru','tr','ar','hi','bn','zh','ja','ko','id','vi','th'];
+  function empty() { return {version: 1, items: [], collections: [], preferences: {theme: 'light', layout:'classic', palette:'graphite', language:'it', reducedMotion: false, wifiOnly: false}, recent: [], files: []}; }
   function hydrate(value) {
     if (!value || value.version !== 1 || !Array.isArray(value.items) || value.items.length > 2000) throw new Error('La libreria salvata non è leggibile. I dati non sono stati modificati.');
     const data = empty();
@@ -116,7 +117,7 @@
     data.collections = [...new Set((value.collections || []).map(s => text(s, 80, true)).concat(data.items.map(i => i.collection_name).filter(Boolean)))];
     if (data.collections.length > 40) throw new Error('Puoi avere al massimo 40 raccolte.');
     const prefs = value.preferences || {};
-    data.preferences = {theme: prefs.theme === 'cinema' ? 'cinema' : 'light', ...appearance(prefs), reducedMotion: prefs.reducedMotion === true, wifiOnly: prefs.wifiOnly === true};
+    data.preferences = {theme: prefs.theme === 'cinema' ? 'cinema' : 'light', ...appearance(prefs), language:languages.includes(prefs.language)?prefs.language:'it', reducedMotion: prefs.reducedMotion === true, wifiOnly: prefs.wifiOnly === true};
     data.recent = (Array.isArray(value.recent) ? value.recent : []).filter(s => typeof s === 'string' && s.length <= 200).slice(0, 8);
     const tokens = new Set();
     data.files = (Array.isArray(value.files) ? value.files : []).filter(f => {

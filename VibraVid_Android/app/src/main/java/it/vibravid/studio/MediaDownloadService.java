@@ -8,6 +8,7 @@ import java.util.List;
 /** Foreground service keeps the real download queue alive when the browser closes. */
 @androidx.annotation.OptIn(markerClass=androidx.media3.common.util.UnstableApi.class)
 public final class MediaDownloadService extends DownloadService {
+    @Override protected void attachBaseContext(android.content.Context base){super.attachBaseContext(AppLanguage.context(base));}
     private DownloadNotificationHelper notifications;
     private android.os.PowerManager.WakeLock wake;
     private DownloadManager.Listener listener;
@@ -15,7 +16,7 @@ public final class MediaDownloadService extends DownloadService {
     public MediaDownloadService(){super(4101,1000,"vibravid_downloads",R.string.download_channel,0);}
     @Override public void onCreate(){
         try{MediaEngine.get(this);super.onCreate();engineReady=true;}
-        catch(RuntimeException error){android.util.Log.e("VibraVid","Coda download non disponibile",error);android.widget.Toast.makeText(this,"La coda dei download non è disponibile. Controlla lo spazio libero e riapri VibraVid.",android.widget.Toast.LENGTH_LONG).show();stopSelf();return;}
+        catch(RuntimeException error){android.util.Log.e("VibraVid","Coda download non disponibile",error);android.widget.Toast.makeText(this,AppLanguage.text(this,"La coda dei download non è disponibile. Controlla lo spazio libero e riapri VibraVid."),android.widget.Toast.LENGTH_LONG).show();stopSelf();return;}
         wake=((android.os.PowerManager)getSystemService(POWER_SERVICE)).newWakeLock(android.os.PowerManager.PARTIAL_WAKE_LOCK,"VibraVid:download");
         wake.setReferenceCounted(false);
         listener=new DownloadManager.Listener(){
@@ -38,7 +39,7 @@ public final class MediaDownloadService extends DownloadService {
     @Override protected Notification getForegroundNotification(List<Download> downloads,int unmetRequirements){
         if(wake!=null)updateWake();
         if(notifications==null)notifications=new DownloadNotificationHelper(this,"vibravid_downloads");
-        return notifications.buildProgressNotification(this,R.drawable.ic_download,null,"VibraVid · Download sul telefono",downloads,unmetRequirements);
+        return notifications.buildProgressNotification(AppLanguage.context(this),R.drawable.ic_download,null,AppLanguage.text(this,"VibraVid · Download sul telefono"),downloads,unmetRequirements);
     }
     @Override public void onTimeout(int startId,int type){if(engineReady)MediaEngine.get(this).manager.pauseDownloads();stopSelf();}
 }

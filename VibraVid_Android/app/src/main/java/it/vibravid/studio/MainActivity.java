@@ -23,6 +23,10 @@ import java.util.concurrent.*;
 public final class MainActivity extends Activity {
     private static final String ORIGIN = "https://appassets.androidplatform.net";
     private static final int IMPORT = 101, EXPORT = 102, VIDEO = 103, SOURCE = 104;
+    private BroadcastReceiver updateCompleted;
+    private volatile boolean updateVisible;
+    boolean updateVisible(){return updateVisible;}
+    private void resumeUpdate(){if(!alive||!updateVisible||isFinishing())return;try{tasks.execute(()->{try{AppUpdater.complete(this);}catch(Exception error){runOnUiThread(()->{if(alive)Toast.makeText(this,AppLanguage.text(this,MediaEngine.message(error)),Toast.LENGTH_LONG).show();});}});}catch(RejectedExecutionException ignored){}}
     private static final int MAX_DATA = 8 * 1024 * 1024;
     private WebView web;
     private FrameLayout root;
@@ -51,6 +55,8 @@ public final class MainActivity extends Activity {
         CacheEntry(JSONObject value) { this.value = value; }
     }
 
+    @Override protected void attachBaseContext(android.content.Context base){super.attachBaseContext(AppLanguage.context(base));}
+
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
         providerEngine=new ProviderEngine(this);
@@ -75,7 +81,7 @@ public final class MainActivity extends Activity {
         root.addView(web, new FrameLayout.LayoutParams(-1, -1));
         setContentView(root);
         try{MediaEngine.get(this);androidx.media3.exoplayer.offline.DownloadService.sendResumeDownloads(this, MediaDownloadService.class, false);}
-        catch(RuntimeException error){Toast.makeText(this,"Lo spazio dei download non è disponibile. Controlla lo spazio libero sul telefono.",Toast.LENGTH_LONG).show();}
+        catch(RuntimeException error){Toast.makeText(this,AppLanguage.text(MainActivity.this,"Lo spazio dei download non è disponibile. Controlla lo spazio libero sul telefono."),Toast.LENGTH_LONG).show();}
         root.requestApplyInsets();
         WebSettings settings = web.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -123,7 +129,7 @@ public final class MainActivity extends Activity {
             }
             @Override public void onPageFinished(WebView view, String url) { ready = url.startsWith(ORIGIN + "/assets/");if(ready&&recoveredPicker!=null){emit("",true,recoveredPicker,"pickerRecovered");recoveredPicker=null;} }
             @Override public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                if (request.isForMainFrame()) Toast.makeText(MainActivity.this, "Avvio non riuscito. Riapri VibraVid.", Toast.LENGTH_LONG).show();
+                if (request.isForMainFrame()) Toast.makeText(MainActivity.this,AppLanguage.text(MainActivity.this,"Avvio non riuscito. Riapri VibraVid."), Toast.LENGTH_LONG).show();
             }
             @Override public boolean onRenderProcessGone(WebView view,RenderProcessGoneDetail detail){
                 if(view!=web)return true;
@@ -155,12 +161,12 @@ public final class MainActivity extends Activity {
     private void showWebFailure(String explanation){
         LinearLayout message=new LinearLayout(this);message.setOrientation(LinearLayout.VERTICAL);message.setGravity(Gravity.CENTER);message.setPadding(32,24,32,24);message.setBackgroundColor(getColor(R.color.app_background));
         TextView text=new TextView(this);text.setText(explanation);text.setTextColor(getColor(R.color.app_text));text.setTextSize(17);message.addView(text);
-        Button retry=new Button(this);retry.setText("Riapri interfaccia");retry.setAllCaps(false);retry.setTextColor(getColor(R.color.app_background));retry.setBackgroundTintList(android.content.res.ColorStateList.valueOf(getColor(R.color.app_text)));retry.setOnClickListener(v->recreate());message.addView(retry);
+        Button retry=new Button(this);retry.setText(AppLanguage.text(MainActivity.this,"Riapri interfaccia"));retry.setAllCaps(false);retry.setTextColor(getColor(R.color.app_background));retry.setBackgroundTintList(android.content.res.ColorStateList.valueOf(getColor(R.color.app_text)));retry.setOnClickListener(v->recreate());message.addView(retry);
         root.addView(message,new FrameLayout.LayoutParams(-1,-1));
     }
 
     private void dispatchUi(Runnable action){
-        runOnUiThread(()->{if(!alive||isFinishing())return;try{action.run();}catch(RuntimeException error){Toast.makeText(this,friendlyError(error),Toast.LENGTH_LONG).show();}});
+        runOnUiThread(()->{if(!alive||isFinishing())return;try{action.run();}catch(RuntimeException error){Toast.makeText(this,AppLanguage.text(MainActivity.this,friendlyError(error)),Toast.LENGTH_LONG).show();}});
     }
 
     public final class Bridge {
@@ -224,6 +230,7 @@ public final class MainActivity extends Activity {
                                 result=providerEngine.resolve(payload.getString("key"),payload.optString("episode"),resolveCall);break;
                             case "downloads": result = downloads(); break;
                             case "sources": result = SourceCatalog.list(MainActivity.this); break;
+                            case "appUpdate": result=AppUpdater.check(MainActivity.this);resumeUpdate();break;
                             case "sourceUpdate": SourceCatalog.update(MainActivity.this, payload.getString("id"), payload.getString("url")); result = new JSONObject(); break;
                             case "sourceImport": result = new JSONObject().put("updated", SourceCatalog.importDomains(MainActivity.this, payload.getJSONObject("data"))); break;
                             case "openSource": openSource(payload); result = new JSONObject(); break;
@@ -266,6 +273,7 @@ public final class MainActivity extends Activity {
 
     private void emit(String id, boolean ok, Object value, String event) {
         if (!alive || web == null) return;
+        if(!ok&&value instanceof String)value=AppLanguage.text(this,(String)value);
         try {
             JSONObject response = new JSONObject().put("id", id).put("ok", ok).put("value", value).put("event", event == null ? JSONObject.NULL : event);
             // Older supported WebViews cannot parse literal Unicode line separators in JS strings.
@@ -521,7 +529,7 @@ public final class MainActivity extends Activity {
                 }
                 if(recovered){JSONObject event=new JSONObject().put("type",code).put("purpose",purpose).put("result",value);runOnUiThread(()->{if(!alive)return;if(ready)emit("",true,event,"pickerRecovered");else recoveredPicker=event;});}
                 else emit(id, true, value, null);
-            } catch (Exception e) {String error=code == IMPORT ? "File non valido: scegli un'esportazione JSON di VibraVid." : friendlyError(e);if(recovered)runOnUiThread(()->{if(alive)Toast.makeText(MainActivity.this,error,Toast.LENGTH_LONG).show();});else emit(id, false,error,null); }
+            } catch (Exception e) {String error=code == IMPORT ? "File non valido: scegli un'esportazione JSON di VibraVid." : friendlyError(e);if(recovered)runOnUiThread(()->{if(alive)Toast.makeText(MainActivity.this,AppLanguage.text(MainActivity.this,error),Toast.LENGTH_LONG).show();});else emit(id, false,error,null); }
         });}catch(RejectedExecutionException error){emit(id,false,"Attendi la fine dell’operazione in corso e riprova il selettore.",null);}
     }
 
@@ -590,7 +598,7 @@ public final class MainActivity extends Activity {
         Uri uri = validHttps(url);
         dispatchUi(() -> {
             try { startActivity(new Intent(Intent.ACTION_VIEW, uri)); }
-            catch (ActivityNotFoundException e) { Toast.makeText(this, "Nessuna app può aprire il collegamento.", Toast.LENGTH_LONG).show(); }
+            catch (ActivityNotFoundException e) { Toast.makeText(this,AppLanguage.text(MainActivity.this,"Nessuna app può aprire il collegamento."), Toast.LENGTH_LONG).show(); }
         });
     }
     private void share(JSONObject data) {
@@ -608,10 +616,11 @@ public final class MainActivity extends Activity {
         runOnUiThread(() -> {
             if(!alive||revision<themeRevision)return;
             themeRevision=revision;
+            if(data.has("language"))AppLanguage.set(this,data.optString("language","it"));
             root.setBackgroundColor(color); if(web!=null)web.setBackgroundColor(color);
             getWindow().setStatusBarColor(color); getWindow().setNavigationBarColor(color);
             getWindow().getDecorView().setSystemUiVisibility(light ? View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR : 0);
-            getSharedPreferences("appearance",0).edit().putBoolean("cinema",dark).putBoolean("light",light).putInt("background",color).apply();
+            getSharedPreferences("appearance",0).edit().putBoolean("cinema",dark).putBoolean("reducedMotion",data.optBoolean("reducedMotion",false)).putBoolean("light",light).putInt("background",color).apply();
         });
     }
 
@@ -653,12 +662,17 @@ public final class MainActivity extends Activity {
         });
     }
     @Override protected void onResume() { super.onResume();
-        try{MediaEngine.get(this);androidx.media3.exoplayer.offline.DownloadService.sendResumeDownloads(this,MediaDownloadService.class,false);}catch(RuntimeException error){Toast.makeText(this,"La coda dei download non è disponibile. Riprova dopo aver controllato lo spazio libero.",Toast.LENGTH_LONG).show();}
+        updateVisible=true;
+        if(updateCompleted==null){updateCompleted=new BroadcastReceiver(){@Override public void onReceive(Context context,Intent intent){resumeUpdate();}};IntentFilter updateFilter=new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);androidx.core.content.ContextCompat.registerReceiver(this,updateCompleted,updateFilter,androidx.core.content.ContextCompat.RECEIVER_EXPORTED);}
+        resumeUpdate();
+        try{tasks.execute(()->DomainRefresh.refresh(this,false));}catch(RejectedExecutionException ignored){}
+        try{MediaEngine.get(this);androidx.media3.exoplayer.offline.DownloadService.sendResumeDownloads(this,MediaDownloadService.class,false);}catch(RuntimeException error){Toast.makeText(this,AppLanguage.text(MainActivity.this,"La coda dei download non è disponibile. Riprova dopo aver controllato lo spazio libero."),Toast.LENGTH_LONG).show();}
         if (web != null) { web.onResume(); emit("", true, new JSONObject(), "resume"); }
     }
-    @Override protected void onPause() { if (web != null) web.onPause(); super.onPause(); }
+    @Override protected void onPause() { updateVisible=false;if (web != null) web.onPause(); super.onPause(); }
     @Override protected void onDestroy() {
         alive = false; tasks.shutdownNow();
+        if(updateCompleted!=null)try{unregisterReceiver(updateCompleted);}catch(RuntimeException ignored){}updateCompleted=null;
         for(androidx.media3.exoplayer.offline.DownloadHelper helper:preparations.values())MediaEngine.get(this).cancelPreparation(helper);preparations.clear();
         for(ProviderHttp.Call call:providerCalls.values())call.cancel();providerCalls.clear();if(providerEngine!=null)providerEngine.close();
         for (HttpURLConnection connection : connections.values()) connection.disconnect();

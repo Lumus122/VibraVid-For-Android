@@ -1,3 +1,48 @@
+# Android 2.8.0 — domini automatici e Update
+
+Gli indirizzi delle fonti vengono sincronizzati in background all’avvio/ritorno nell’app, al massimo una volta all’ora, dall’endpoint usato dal PC: `https://domains-tracker.server66.workers.dev/get`. Se una ricerca fallisce, viene tentato un aggiornamento e una sola nuova ricerca quando l’indirizzo è cambiato. I tentativi sono limitati ad almeno trenta secondi di distanza; senza rete o con servizio indisponibile rimane l’ultimo elenco salvato. Non si indovinano estensioni casuali. Solo fonti note e indirizzi HTTPS validi vengono accettati. Gli indirizzi modificati esplicitamente o importati dall’utente sono conservati come personalizzazioni. La fonte centrale deve conoscere il dominio nuovo; la disponibilità di ogni sito non è garantita.
+
+**Impostazioni → Update** controlla le ultime venti release pubblicate di `Lumus122/VibraVid-For-Android`, ignora bozze/prerelease e seleziona il pacchetto Android stabile più recente. Se è più nuovo, avvia il download con il gestore Android; alla conclusione, o riaprendo l’app, verifica dimensione, hash GitHub quando presente, identificativo dell’app, versionCode crescente e identità della firma. L’installazione usa la schermata Android e richiede la conferma dell’utente. Se necessario Android offre il permesso per installare da questa app; rifiutandolo non viene aperta ripetutamente la richiesta. Tocca nuovamente Update per riprovare. Nessuna installazione silenziosa, nessun caricamento sulla repo dal telefono.
+
+La repo osservata contieneva ancora `v2.5.1-android`: il comando considera correttamente 2.8.0 già aggiornata finché non viene pubblicato un APK più nuovo. Pubblicazione solo dopo il consenso del proprietario. La prova dell’installazione completa di una release successiva su telefono resta da effettuare: non esisteva una release più nuova da installare durante questa verifica.
+
+---
+
+# Verifica Android 2.7.0
+
+Prove locali della versione corrente:
+
+- `testReleaseUnitTest`: contratto MediaStore su API 35 simulata con Robolectric; volume concreto, pubblicazione senza colonne di metadati non scrivibili, rollback, recupero, conservazione dei film pubblicati, annullamento mentre occupato ed errori di avvio del servizio.
+- Il muxer effettivo scrive un MP4 dai campioni H.264/AAC reali della fixture AndroidX; il parser rilegge video/audio, dimensioni, frequenza e canali, numero dei campioni e contenuto codificato senza perdite. È una prova del contenitore, non una prova dei decoder hardware del telefono.
+- Preferenza lingua, codici sconosciuti, persistenza, configurazione RTL, completezza di tutti i cataloghi e controlli nativi tradotti senza alterare il titolo.
+- Browser Chromium isolato: 21 lingue, etichette, selettore, libreria, editor, nomi e note intatti, RTL e larghezze 390/320 px, persistenza alla riapertura e nessuna eccezione JavaScript. Risultato: 174 verifiche.
+- `verify_languages.cjs`: 13.487 assert su cataloghi e preferenze, null, HTML e attributi, entità, URL, emoji, nomi uguali alle etichette e dati che contengono markup.
+- Regressioni libreria: 22 verifiche. Aspetto: 123 verifiche, dieci layout e dieci palette, contrasto minimo del testo 5,41:1.
+
+**Limiti**: non è disponibile il telefono dell’utente con Android 17 QPR 3 Beta 1 né il relativo log del crash. Le correzioni coprono difetti concreti del codice; la causa esatta segnalata sul telefono non viene dichiarata riprodotta. Non sono stati ripetuti in questa versione tutti i download dai siti reali né la conversione completa HLS/DASH su quel telefono. I risultati fisici della precedente 2.6.0 sotto sono storici e non valgono come esecuzioni sul nuovo APK. Le bozze di traduzione non sono tutte revisionate da madrelingua.
+
+I test e la fixture multimediale sono nei sorgenti, esclusi dall’APK. Per ripetere: Gradle `testReleaseUnitTest lintRelease`, `node tools/verify_model.cjs`, `node tools/verify_appearance.cjs`, `node tools/verify_languages.cjs`. La prova UI usa Playwright, una Chrome locale e un server limitato a 127.0.0.1 che serve `app/src/main/assets` sulla porta 38912. `tools/build_locales.py --offline` rigenera i cataloghi JS dai JSON senza rete e senza dipendere da file di build. La compilazione normale non chiama servizi di traduzione. `prepare_i18n.cjs` è una migrazione già applicata e rifiuta una seconda esecuzione.
+
+---
+
+# Lettore e galleria Android 2.6.0
+
+APK: **2b20d230af54be3a6ba0fcfc50da9131796c40fc8ecf97cb890875a43336452b**, versionCode 26000, 6463903 bytes. Firma e certificato identici alla versione precedente; sorgenti e asset incorporati verificati. I runner QA e le fixture non sono incorporati nell'APK.
+
+Sul pacchetto con questo hash, Android 9 / API 28, nove verifiche native superate prima del timeout della fixture DASH: riproduzione HLS dalla cache, creazione di un vero MP4 con audio e video nella galleria, durata e dimensioni registrate, riproduzione effettiva della copia, conservazione del download, copia identica di un file content://, rifiuto e rimozione di un output invalido, annullamento senza pubblicare file parziali, errore chiaro per file non più accessibile.
+
+La suite completa **non è dichiarata superata**: la successiva preparazione del campione DASH pubblico ha superato il limite del motore. Il log, con le nove assert precedenti e l'errore finale, è `release/gallery-smoke-260-export.txt`; il riepilogo è `release/VALIDATION.json`. I tentativi precedenti sono conservati in `release/logs-260`. Il primo tentativo dell'esportazione, con il lettore ancora in riproduzione sul simulatore senza accelerazione, ha superato il limite del test; la ripetizione a lettore in pausa ha completato l'HLS e verificato il file realmente scritto. Non si attribuisce automaticamente il timeout del simulatore a ogni telefono.
+
+Quattordici controlli del lettore erano superati sulla build iniziale de2b7c63559e94132b7fa027b55c863d1db0182567c8e676f17d3d1ccd5a9329: seek di dieci secondi, riempimento, velocità effettiva, audio, blocco/sblocco, pulsanti accessibili in orizzontale, scomparsa in riproduzione e ritorno dei controlli in pausa. Quel tentativo è stato interrotto durante la verifica successiva della galleria; non è riportato come suite interamente superata. Le rifiniture successive hanno semplificato la caption Audio e riutilizzato font, shader e tracciati, senza cambiare le azioni.
+
+Verifiche statiche del pacchetto corrente: **0 errori e 38 warning** di lint; 22 controlli del modello; 123 controlli di palette, persistenza e contrasto, minimo 5,41:1. I warning riguardano principalmente versioni mantenute, testi italiani, preferenze sincrone usate fuori dalla UI per il recupero, costruttori di viste create solo da codice e raccomandazioni PiP. Non sono stati silenziati globalmente.
+
+Il percorso MediaStore IS_PENDING di Android 10+ è compilato e controllato staticamente, ma non è stato verificato nativamente: l'emulatore API 30 senza accelerazione non ha completato l'avvio in tempo utile ed è stato arrestato. Restano da verificare su telefoni reali decoder, gallerie dei produttori, PiP, notifiche Android 13+ e restrizioni Android 15. Il rendering grafico dell'emulatore ha restituito una cattura nera: non è presentata come prova visiva del nuovo player. Il codice Windows e la repo GitHub non sono stati aggiornati.
+
+Per ripetere la verifica: `python tools/run_regressions.py GallerySmoke` sull'emulatore QA 5582; `export` limita la prova alla galleria. La porta 5584 è riservata al secondo emulatore QA isolato. Le prove sono serializzate.
+
+---
+
 # Revisione Android 2.5.1 — consegna richiesta
 
 APK: **4fe6f9de33241d25cbc1cb9e819780e268f3f7058c35600ce68eb2f13eed2e4b**, versionCode 25001, 6187657 bytes. Firma, certificato di aggiornamento, sorgenti e asset del pacchetto verificati. Test e fixture assenti dall'APK.
@@ -8,7 +53,7 @@ Le suite native vengono registrate in release/*-smoke-251.json con l'hash esatto
 
 Il primo tentativo del provider ha rilevato un contatore a zero quando i segmenti erano già salvati; il log del tentativo fallito è conservato in release/logs-251. Identificata la mancanza di callback nel percorso tutto-in-cache di Media3 1.5.1, applicata la correzione e aggiunte due regressioni dedicate HLS/DASH. Stato della prova sull'ultimo APK: **interrupted at user request; not claimed passed**. Il dettaglio aggiornato è in release/VALIDATION.json.
 
-L'utente ha richiesto la consegna senza ulteriori test. La revisione non garantisce assenza assoluta di bug. Emulatore dedicato Android 9/API 28; nessun telefono fisico. Non certificati selettore SAF reale, notifiche Android 13+, restrizioni Android 15, PiP/decoder fisici e risparmio energetico OEM. Le fonti esterne possono cambiare. La revisione applicativa ha lasciato invariata la versione Windows. Le sezioni successive sono storico, con i rispettivi hash.
+L'utente ha richiesto la consegna senza ulteriori test. La revisione non garantisce assenza assoluta di bug. Emulatore dedicato Android 9/API 28; nessun telefono fisico. Non certificati selettore SAF reale, notifiche Android 13+, restrizioni Android 15, PiP/decoder fisici e risparmio energetico OEM. Le fonti esterne possono cambiare. Nessun commit, push o pubblicazione eseguito; versione Windows invariata. Le sezioni successive sono storico, con i rispettivi hash.
 
 ---
 
