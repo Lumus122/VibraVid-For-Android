@@ -9,9 +9,9 @@
 
 # VibraVid-For-Android
 
-**Sorgenti Android 3.1.0**: Home per generi, ricerca coerente, Download e Libreria ridisegnati, trailer e schede complete, Aspetto compatto e player immersivo. [Modifiche e verifica degli 11 punti](VibraVid_Android/README.md).
+**Android 3.1.0**: Home per generi, ricerca coerente, Download e Libreria ridisegnati, trailer e schede complete, Aspetto compatto e player immersivo. [Modifiche e verifica degli 11 punti](VibraVid_Android/README.md).
 
-La release APK pubblicata rimane **2.8.0**: i collegamenti qui sotto puntano a quella release. La build 3.1.0 è stata verificata localmente; questo aggiornamento del repository non crea una nuova release APK.
+La **release APK 3.1.0 è pubblicata** con la stessa firma delle versioni precedenti. Tutti e cinque gli allegati sono stati riscaricati da GitHub e verificati tramite SHA-256.
 
 
 
@@ -21,7 +21,7 @@ La release APK pubblicata rimane **2.8.0**: i collegamenti qui sotto puntano a q
 
 Versione Android autonoma di **VibraVid Studio**, basata sul progetto [AstraeLabs/VibraVid](https://github.com/AstraeLabs/VibraVid). Ricerca, download e libreria funzionano sul telefono: non serve un PC acceso.
 
-[**Scarica l’APK 2.8.0**](https://github.com/Lumus122/VibraVid-For-Android/releases/download/v2.8.0-android/VibraVid_Studio_Android.apk) · [Releases](https://github.com/Lumus122/VibraVid-For-Android/releases) · [Guida d’uso](docs/HOW_TO_USE.md) · [Compilazione](docs/BUILD_ANDROID.md)
+[**Scarica l’APK 3.1.0**](https://github.com/Lumus122/VibraVid-For-Android/releases/download/v3.1.0-android/VibraVid_Studio_Android.apk) · [Releases](https://github.com/Lumus122/VibraVid-For-Android/releases) · [Guida d’uso](docs/HOW_TO_USE.md) · [Compilazione](docs/BUILD_ANDROID.md)
 
 ## Funzionalità
 
@@ -35,7 +35,7 @@ Versione Android autonoma di **VibraVid Studio**, basata sul progetto [AstraeLab
 ## Installazione
 
 1. Serve **Android 8.0 o successivo** e Android System WebView aggiornato.
-2. Scarica `VibraVid_Studio_Android.apk` dalla [release](https://github.com/Lumus122/VibraVid-For-Android/releases/tag/v2.8.0-android).
+2. Scarica `VibraVid_Studio_Android.apk` dalla [release](https://github.com/Lumus122/VibraVid-For-Android/releases/tag/v3.1.0-android).
 3. Apri il file sul telefono e, se richiesto, consenti al browser o al gestore file di installare l’app.
 4. Se hai già una versione firmata con la stessa chiave, installa l’aggiornamento senza disinstallare: libreria e download vengono conservati.
 
@@ -55,7 +55,7 @@ Gli adattatori Android automatici sono StreamingCommunity, Streamingcommunity 2,
 
 HLS/DASH sono conservati come manifest e tracce nella cache privata dell’app, senza conversione in un MP4 esportabile. Disinstallare l’app elimina libreria e download privati; prima di farlo esporta la libreria.
 
-La release 2.8.0 include i miglioramenti del lettore e della galleria, 21 lingue, domini automatici e aggiornamento dalla repo. Verifiche locali superate: 20 test Android su host, 195 controlli UI e 13.676 controlli delle lingue. Firma e integrità dei pacchetti pubblicati verificate. L’installazione di una futura release e la verifica sul telefono Android 17 beta restano da completare. Risultati e limiti in [QA.md](VibraVid_Android/QA.md).
+La release 3.1.0 include le modifiche riportate sopra e conserva le funzionalità precedenti. Verifiche locali superate: 38 test Android su host, 377 controlli UI, 195 controlli UI delle lingue e 15.587 controlli dei cataloghi linguistici. Firma e integrità dei pacchetti pubblicati verificate. La prova su telefono fisico resta da completare. Risultati e limiti in [QA.md](VibraVid_Android/QA.md).
 
 ## Codice e compilazione
 
@@ -70,3 +70,4 @@ Consulta [CONTRIBUTING.md](CONTRIBUTING.md) e usa le [Issues](https://github.com
 ## Crediti e licenze
 
 Progetto originale: **AstraeLabs e collaboratori di VibraVid**. Questo fork ospita un adattamento Android indipendente e non è una release ufficiale di AstraeLabs. Licenza [GNU GPL v3](LICENSE); le dipendenze e gli asset conservano le proprie licenze, elencate nelle [notifiche di terze parti](VibraVid_Android/app/src/main/assets/THIRD-PARTY-NOTICES.txt). Nessun film o credenziale delle fonti è incluso nel repository.
+
