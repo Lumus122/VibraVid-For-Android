@@ -9,7 +9,9 @@
 
 # VibraVid-For-Android
 
-**Aggiornamento Android 2.8.0**: nuovo lettore, salvataggio in galleria corretto, 21 lingue, recupero automatico dei domini e pulsante Update dalle release GitHub. [Guida e verifiche](VibraVid_Android/README.md).
+**Sorgenti Android 3.1.0**: Home per generi, ricerca coerente, Download e Libreria ridisegnati, trailer e schede complete, Aspetto compatto e player immersivo. [Modifiche e verifica degli 11 punti](VibraVid_Android/README.md).
+
+La release APK pubblicata rimane **2.8.0**: i collegamenti qui sotto puntano a quella release. La build 3.1.0 è stata verificata localmente; questo aggiornamento del repository non crea una nuova release APK.
 
 
 

@@ -26,7 +26,7 @@ public final class VideoActivity extends Activity implements CinemaControls.Acti
     private ExoPlayer player;
     private PlayerView view;
     private CinemaControls controls;
-    private String key,offlineId,title="Video";
+    private String key,offlineId,title="Video",titleIdentity="";
     private AlertDialog errorDialog,optionsDialog;
     private long position,lastExportNotice;
     private boolean playing=true,offline,local,errorShown,lifecyclePause,fill,resumed,exportPermissionPending;
@@ -45,7 +45,7 @@ public final class VideoActivity extends Activity implements CinemaControls.Acti
             if(id!=null){
                 MediaEngine engine=MediaEngine.get(this);DownloadRequest request=engine.completed(id);
                 item=request.toMediaItem();sources=new DefaultMediaSourceFactory(engine.offlineFactory());
-                name=MediaEngine.metadata(request).optString("name","Video offline");key="offline-"+id;offline=true;offlineId=id;
+                name=MediaEngine.metadata(request).optString("name","Video offline");titleIdentity=MediaEngine.metadata(request).optString("titleIdentity");key="offline-"+id;offline=true;offlineId=id;
             }else{
                 sourceUri=getIntent().getData();
                 if(sourceUri==null||(!"https".equals(sourceUri.getScheme())&&!"content".equals(sourceUri.getScheme())))throw new IllegalArgumentException("Seleziona un video o un collegamento HTTPS valido.");
@@ -62,7 +62,10 @@ public final class VideoActivity extends Activity implements CinemaControls.Acti
             View gestures=new View(this);gestures.setContentDescription(AppLanguage.text(VideoActivity.this,"Mostra o nascondi i controlli del video"));gestures.setOnClickListener(v->{if(controls!=null)controls.toggle();});root.addView(gestures,new FrameLayout.LayoutParams(-1,-1));
             controls=new CinemaControls(this,title,sourceLabel(),getSharedPreferences("appearance",0).getBoolean("reducedMotion",false),this);
             controls.pipAvailable(getPackageManager().hasSystemFeature("android.software.picture_in_picture"));root.addView(controls,new FrameLayout.LayoutParams(-1,-1));
-            root.setOnApplyWindowInsetsListener((v,insets)->{controls.safeInsets(insets.getSystemWindowInsetLeft(),insets.getSystemWindowInsetTop(),insets.getSystemWindowInsetRight(),insets.getSystemWindowInsetBottom());return insets;});
+            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(root,(v,insets)->{
+                androidx.core.graphics.Insets safe=insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.displayCutout()|androidx.core.view.WindowInsetsCompat.Type.systemBars());
+                controls.safeInsets(safe.left,safe.top,safe.right,safe.bottom);return insets;
+            });
             installGestures(gestures);setContentView(root);immersive();root.requestApplyInsets();
             if(playing)getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             player=new ExoPlayer.Builder(this).setMediaSourceFactory(sources).build();
@@ -86,7 +89,8 @@ public final class VideoActivity extends Activity implements CinemaControls.Acti
         }catch(Exception error){toast(MediaEngine.message(error));finish();}
     }
     private String sourceLabel(){return offline?"VIDEO OFFLINE":local?"VIDEO DEL DISPOSITIVO":"VIDEO ONLINE";}
-    private void immersive(){getWindow().setStatusBarColor(Color.BLACK);getWindow().setNavigationBarColor(Color.BLACK);getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY|View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);}
+    private void immersive(){PlayerWindow.immersive(getWindow());}
+    @Override public void onConfigurationChanged(android.content.res.Configuration config){super.onConfigurationChanged(config);if(!isInPictureInPictureMode())immersive();if(controls!=null){controls.requestApplyInsets();controls.hideControls();}}
     @Override public void onWindowFocusChanged(boolean focus){super.onWindowFocusChanged(focus);if(focus&&!isInPictureInPictureMode())immersive();}
     private void refresh(){if(player!=null&&controls!=null){boolean ready=player.getPlayWhenReady()&&player.getPlaybackState()!=Player.STATE_ENDED;controls.update(player.getCurrentPosition(),player.getDuration(),player.getBufferedPosition(),ready,player.getPlaybackState()==Player.STATE_BUFFERING);}}
     private void toast(String message){Toast.makeText(this,AppLanguage.text(this,message),Toast.LENGTH_LONG).show();}
@@ -171,7 +175,7 @@ public final class VideoActivity extends Activity implements CinemaControls.Acti
             }
         });surface.setOnTouchListener((v,event)->{detector.onTouchEvent(event);return true;});
     }
-    private void remember(){if(player==null||key==null||player.getPlaybackState()==Player.STATE_IDLE)return;position=player.getPlaybackState()==Player.STATE_ENDED?0:player.getCurrentPosition();getSharedPreferences("playback",0).edit().putLong(key,position).apply();}
+    private void remember(){if(player==null||key==null||player.getPlaybackState()==Player.STATE_IDLE)return;position=player.getPlaybackState()==Player.STATE_ENDED?0:player.getCurrentPosition();getSharedPreferences("playback",0).edit().putLong(key,position).apply();PlaybackStore.remember(this,key,titleIdentity,player.getCurrentPosition(),player.getDuration(),player.getPlaybackState()==Player.STATE_ENDED);}
     @Override protected void onSaveInstanceState(Bundle state){remember();state.putLong("position",position);state.putBoolean("playing",playing);state.putBoolean("fill",fill);state.putLong("exportNotice",lastExportNotice);state.putBoolean("exportPermissionPending",exportPermissionPending);if(player!=null)state.putFloat("speed",player.getPlaybackParameters().speed);super.onSaveInstanceState(state);}
     @Override public void onUserLeaveHint(){if(player!=null&&player.isPlaying()&&getPackageManager().hasSystemFeature("android.software.picture_in_picture"))pip();}
     @Override public void onPictureInPictureModeChanged(boolean inPip,android.content.res.Configuration config){super.onPictureInPictureModeChanged(inPip,config);if(controls!=null)controls.pip(inPip);if(!inPip)immersive();}

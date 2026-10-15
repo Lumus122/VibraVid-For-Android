@@ -48,7 +48,7 @@ public final class SourceActivity extends Activity {
         try{provider=SourceCatalog.find(this,getIntent().getStringExtra("source"));SourceCatalog.https(provider.getString("url"));}
         catch(Exception e){Toast.makeText(this,AppLanguage.text(SourceActivity.this,"La fonte non è valida. Controlla il suo indirizzo nelle Impostazioni."),Toast.LENGTH_LONG).show();finish();return;}
         adBlockEnabled=getSharedPreferences("source_browser",MODE_PRIVATE).getBoolean("adblock:"+provider.optString("id"),true);
-        body=Typeface.createFromAsset(getAssets(),"fonts/nunito-sans.ttf");
+        body=Typeface.createFromAsset(getAssets(),"fonts/inter.ttf");
         layout=new LinearLayout(this);layout.setOrientation(LinearLayout.VERTICAL);layout.setBackgroundColor(getColor(getSharedPreferences("appearance",0).getBoolean("cinema",false)?R.color.cinema_background:R.color.app_background));
         layout.setOnApplyWindowInsetsListener((view,insets)->{view.setPadding(insets.getSystemWindowInsetLeft(),insets.getSystemWindowInsetTop(),insets.getSystemWindowInsetRight(),insets.getSystemWindowInsetBottom());return insets.consumeSystemWindowInsets();});
         LinearLayout header=new LinearLayout(this);header.setGravity(Gravity.CENTER_VERTICAL);header.setPadding(dp(8),dp(6),dp(10),dp(6));

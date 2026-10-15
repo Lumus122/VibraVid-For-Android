@@ -25,9 +25,9 @@ const root=path.resolve(__dirname,'..'),M=require(path.join(root,'app/src/main/a
   assert.equal(await page.locator('[data-page="library"] span').textContent(),expected);
   const fits=await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2);assert.ok(fits,'Settings overflow '+language.code);
   await page.locator('[data-page="library"]').click();await page.waitForFunction(()=>window.VibraApp.diagnostics().page==='library');
-  assert.deepEqual(await page.locator('.card-title').allTextContents(),['Lingua','Film']);
+  assert.deepEqual((await page.locator('.card-title').allTextContents()).sort(),['Film','Lingua']);
   assert.equal(await page.locator('.library-card').count(),2);
-  await page.locator('.card-open').filter({hasText:'Film'}).click();
+  await page.locator('.card-open').filter({hasText:'Film'}).click();await page.locator('#sheet [data-action="edit"]').click();
   assert.equal(await page.locator('textarea[name="notes"]').inputValue(),'Salva video <script> & "映画" 😀');
   await page.locator('[data-action="close-sheet"]').click();
   await page.locator('#open-settings').click();await page.waitForFunction(()=>window.VibraApp.diagnostics().page==='settings');
@@ -40,7 +40,7 @@ const root=path.resolve(__dirname,'..'),M=require(path.join(root,'app/src/main/a
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'320px overflow '+code);checks++;
  }
  await page.locator('#app-language').selectOption('en');await page.waitForFunction(()=>window.VibraApp.diagnostics().language==='en');
- await page.locator('[data-action="appearance"][data-key="palette"][data-value="paper"]').click().catch(()=>{});
+ await page.locator('[data-action="settings-tab"][data-value="appearance"]').click();await page.locator('#appearance-palette').selectOption('paper');await page.locator('[data-action="settings-tab"][data-value="general"]').click();
  await page.screenshot({path:path.join(root,'build/i18n/settings-en.png'),fullPage:true});
  // Reload without the seed script to prove persisted preferences.
  await context.clearCookies();await page.evaluate(()=>location.reload());await page.waitForFunction(()=>window.VibraApp?.diagnostics().ready);

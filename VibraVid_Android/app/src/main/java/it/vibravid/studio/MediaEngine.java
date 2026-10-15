@@ -121,6 +121,12 @@ public final class MediaEngine {
             .put("sourcePage",payload.optString("sourcePage", ""))
             .put("headerOrigin",Uri.parse(url).getScheme()+"://"+Uri.parse(url).getEncodedAuthority())
             .put("headers",safeHeaders(payload.optJSONObject("headers")));
+        for(String field:new String[]{"poster","titleIdentity","titleName","titleKind"}){
+            String value=payload.optString(field);if(!value.isEmpty()&&value.length()<2000){
+                if(field.equals("poster")){try{value=SourceCatalog.https(value).toString();}catch(Exception ignored){continue;}}
+                meta.put(field,value);
+            }
+        }
         String providerKey=payload.optString("providerKey"),downloadIdentity=url;
         if(!providerKey.isEmpty()&&providerKey.length()<=300){downloadIdentity="provider:"+providerKey+":"+Math.max(360,Math.min(2160,payload.optInt("quality",720)));meta.put("providerKey",providerKey);}
         byte[] digest=java.security.MessageDigest.getInstance("SHA-256").digest(downloadIdentity.getBytes(StandardCharsets.UTF_8));
@@ -182,6 +188,7 @@ public final class MediaEngine {
                 if(error.startsWith("incomplete:")&&status==8)status=16;
                 rows.put(new JSONObject().put("id",d.request.id).put("name",meta.optString("name","Video"))
                     .put("engine","offline").put("source",meta.optString("source")).put("status",status)
+                    .put("poster",meta.optString("poster")).put("titleIdentity",meta.optString("titleIdentity")).put("playback",PlaybackStore.video(context,d.request.id))
                     .put("bytes",d.getBytesDownloaded()).put("total",d.contentLength).put("percent",d.getPercentDownloaded())
                     .put("paused",d.state==Download.STATE_STOPPED).put("time",d.startTimeMs)
                     .put("error",error.replaceFirst("^incomplete:","")));

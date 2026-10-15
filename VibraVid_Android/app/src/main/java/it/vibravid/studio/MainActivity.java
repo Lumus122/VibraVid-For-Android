@@ -30,6 +30,8 @@ public final class MainActivity extends Activity {
     private static final int MAX_DATA = 8 * 1024 * 1024;
     private WebView web;
     private FrameLayout root;
+    private View fullscreenVideo;
+    private WebChromeClient.CustomViewCallback fullscreenCallback;
     private final ExecutorService tasks = new ThreadPoolExecutor(3, 3, 30, TimeUnit.SECONDS,
         new ArrayBlockingQueue<Runnable>(32), new ThreadPoolExecutor.AbortPolicy());
     private final Map<String, Future<?>> pending = new ConcurrentHashMap<>();
@@ -67,6 +69,7 @@ public final class MainActivity extends Activity {
         getWindow().setStatusBarColor(savedBackground);getWindow().setNavigationBarColor(savedBackground);
         getWindow().getDecorView().setSystemUiVisibility(getSharedPreferences("appearance",0).getBoolean("light",false) ? View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR : 0);
         root.setOnApplyWindowInsetsListener((v, insets) -> {
+            if(fullscreenVideo!=null){v.setPadding(0,0,0,0);return insets;}
             v.setPadding(insets.getSystemWindowInsetLeft(), insets.getSystemWindowInsetTop(),
                 insets.getSystemWindowInsetRight(), insets.getSystemWindowInsetBottom());
             return insets.consumeSystemWindowInsets();
@@ -89,12 +92,17 @@ public final class MainActivity extends Activity {
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
-        settings.setMediaPlaybackRequiresUserGesture(true);
+        settings.setMediaPlaybackRequiresUserGesture(false);
         settings.setSupportMultipleWindows(false);
         settings.setSafeBrowsingEnabled(true);
         android.webkit.CookieManager.getInstance().setAcceptThirdPartyCookies(web, false);
         web.addJavascriptInterface(new Bridge(), "VibraAndroid");
         web.setWebChromeClient(new WebChromeClient() {
+            @Override public void onShowCustomView(View view,CustomViewCallback callback){
+                if(fullscreenVideo!=null){callback.onCustomViewHidden();return;}
+                fullscreenVideo=view;fullscreenCallback=callback;root.setPadding(0,0,0,0);root.addView(view,new FrameLayout.LayoutParams(-1,-1));web.setVisibility(View.GONE);PlayerWindow.immersive(getWindow());
+            }
+            @Override public void onHideCustomView(){hideVideoFullscreen();}
             @Override public boolean onConsoleMessage(ConsoleMessage m) {
                 if (m.messageLevel() == ConsoleMessage.MessageLevel.ERROR)
                     android.util.Log.e("VibraVid", m.message() + " @" + m.lineNumber());
@@ -114,7 +122,7 @@ public final class MainActivity extends Activity {
                             name.endsWith(".svg") ? "image/svg+xml" : "text/plain";
                         Map<String, String> headers = new HashMap<>();
                         headers.put("Content-Security-Policy", "default-src 'none'; script-src 'self'; style-src 'self'; " +
-                            "font-src 'self'; img-src 'self' https: data:; connect-src 'self'; base-uri 'none'; " +
+                            "font-src 'self'; img-src 'self' https: data:; media-src 'self' https: blob:; connect-src 'self'; base-uri 'none'; " +
                             "form-action 'none'; frame-src 'none'; object-src 'none'");
                         headers.put("X-Content-Type-Options", "nosniff");
                         return new WebResourceResponse(mime, "UTF-8", 200, "OK", headers, getAssets().open(name));
@@ -219,6 +227,9 @@ public final class MainActivity extends Activity {
                             case "load": result = load(); break;
                             case "save": save(payload); result = new JSONObject().put("saved", true); break;
                             case "search": result = search(id, payload); break;
+                            case "titleDetails": result=TitleDetails.load(MainActivity.this,payload,url->fetch(id,url,4500)); break;
+                            case "playbackProgress": result=PlaybackStore.titles(MainActivity.this); break;
+                            case "discover": result=DiscoveryCatalog.load(MainActivity.this,url->fetch(id,url,8000)); break;
                             case "providerSearch":
                                 ProviderHttp.Call searchCall=new ProviderHttp.Call();providerCalls.put(id,searchCall);
                                 result=providerEngine.search(payload.optString("query").trim(),payload.optString("source","__all__"),payload.optString("kind","all"),searchCall);break;
@@ -436,7 +447,7 @@ public final class MainActivity extends Activity {
         connection.setConnectTimeout(timeout); connection.setReadTimeout(timeout);
         connection.setInstanceFollowRedirects(false);
         connection.setRequestProperty("Accept", "application/json");
-        connection.setRequestProperty("User-Agent", "VibraVidStudio/2.1 (Android catalog app; https://www.wikidata.org/)");
+        connection.setRequestProperty("User-Agent", "VibraVidStudio/3.1 (Android catalog app; https://www.wikidata.org/)");
         try {
             int code = connection.getResponseCode();
             if (code == 429) throw new IllegalArgumentException("La fonte ha ricevuto troppe richieste. Attendi un minuto e riprova.");
@@ -655,7 +666,13 @@ public final class MainActivity extends Activity {
         return new JSONObject(text);
     }
 
+    private void hideVideoFullscreen(){
+        if(fullscreenVideo==null)return;root.removeView(fullscreenVideo);fullscreenVideo=null;
+        if(web!=null)web.setVisibility(View.VISIBLE);PlayerWindow.restore(getWindow());root.requestApplyInsets();
+        WebChromeClient.CustomViewCallback callback=fullscreenCallback;fullscreenCallback=null;if(callback!=null)callback.onCustomViewHidden();
+    }
     @Override public void onBackPressed() {
+        if(fullscreenVideo!=null){hideVideoFullscreen();return;}
         if(web==null){super.onBackPressed();return;}
         web.evaluateJavascript("window.VibraApp&&window.VibraApp.back()", result -> {
             if (!"true".equals(result)) MainActivity.super.onBackPressed();
@@ -669,7 +686,7 @@ public final class MainActivity extends Activity {
         try{MediaEngine.get(this);androidx.media3.exoplayer.offline.DownloadService.sendResumeDownloads(this,MediaDownloadService.class,false);}catch(RuntimeException error){Toast.makeText(this,AppLanguage.text(MainActivity.this,"La coda dei download non è disponibile. Riprova dopo aver controllato lo spazio libero."),Toast.LENGTH_LONG).show();}
         if (web != null) { web.onResume(); emit("", true, new JSONObject(), "resume"); }
     }
-    @Override protected void onPause() { updateVisible=false;if (web != null) web.onPause(); super.onPause(); }
+    @Override protected void onPause() { hideVideoFullscreen();updateVisible=false;if (web != null) web.onPause(); super.onPause(); }
     @Override protected void onDestroy() {
         alive = false; tasks.shutdownNow();
         if(updateCompleted!=null)try{unregisterReceiver(updateCompleted);}catch(RuntimeException ignored){}updateCompleted=null;

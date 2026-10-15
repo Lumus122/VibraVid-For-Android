@@ -1,0 +1,12 @@
+{
+  "repository": "Lumus122/VibraVid-For-Android",
+  "branch": "main",
+  "parent_commit": "3d0e7bdc3733b1d44e61b4c7b577f427177ea310",
+  "android_version": "3.1.0-android",
+  "verified_local_apk_sha256": "b0faaefb43355f2a98f249282ae60a2e074924d09dfebcfc6bb105f6769dc20a",
+  "tracked_source_equivalence": "All app/src/main files match the verified source archive, allowing only Git CRLF/LF normalization. Original BUILD_MANIFEST records original build bytes.",
+  "eol_normalized_files": 8,
+  "files_to_commit": 74,
+  "secret_scan_passed": true,
+  "apk_release_created": false
+}

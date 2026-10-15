@@ -1,17 +1,23 @@
-# Lettore cinematografico — Android 2.6.0
+# VibraVid 3.1
 
-Il video occupa l'intera superficie, con proporzioni originali o riempimento a scelta. I colori dei contenuti restano originali. La cornice usa nero, bianco e grigi neutri; sfumature trasparenti proteggono la leggibilità dei comandi senza coprire l'immagine. Nunito Sans locale, icone vettoriali disegnate nativamente, bersagli di tocco di almeno 48 dp, tempo trascorso e rimanente e una gerarchia chiara fra titolo, azione principale e comandi secondari. Nessun logo o asset Netflix è incorporato.
+Brief: un catalogo cinematografico scuro, vicino allo schizzo del proprietario. Locandine e titoli hanno priorità. Restano tutte le funzioni, compresi Serata, fonti, importazione e palette.
 
-I comandi restano visibili in pausa e scompaiono durante la riproduzione. Un tocco li richiama; doppio tocco e scorrimenti verticali velocizzano le azioni frequenti. Il lucchetto previene tocchi accidentali e conserva un accesso esplicito allo sblocco. Le barre di sistema vengono nascoste, mentre gli eventuali insets sono applicati alla cornice e non al video. La disposizione si adatta a verticale e orizzontale; in spazi bassi i comandi secondari mostrano le sole icone, con descrizioni accessibili complete.
+Token: fondo #080808, carbone #141414, superficie #232323, testo #ffffff, testo secondario #b3b3b3, azione #e50914. Inter per interfaccia e informazioni, Bebas Neue solo per il marchio esistente. Titoli sezione 32/40, generi 20/26, testo 14/21. Allineamento a sinistra, margini mobili 20px.
 
-Il salvataggio in galleria richiede una conferma e mostra avanzamento, esito e annullamento. Usa una copia, conserva il download e continua in un servizio in primo piano. Il movimento ridotto disattiva le dissolvenze. Timer e riferimenti vengono rilasciati quando il lettore lascia il primo piano; shader e tracciati delle icone sono riutilizzati invece di essere riallocati a ogni disegno.
+Home:
+    marchio                 profilo
+    [ ricerca                 > ]
+    Film                    Tutti
+      Thriller [poster poster ...]
+      Azione   [poster poster ...]
+      ...
+    Serie TV                Tutti
+      Thriller [poster poster ...]
+      ...
+    Home      Download      Libreria
 
-## Aspetto dell'app — versione 2.5.0, conservato
+Download: locandina a sinistra, nome/stato/progresso e azioni a destra. Libreria: ricerca, filtro tipo a chip, altri filtri raccolti; griglia a due colonne mobile. Scheda: trailer 16:9, azioni sotto il video, trama, informazioni, cast e stagioni, simili. Aspetto: due selettori, una piccola anteprima.
 
-Il brief richiede dieci layout dell'intera interfaccia e dieci palette, anche chiare. La prima apertura resta Classico/Grafite: nero, grigio e perla. Le scelte sono indipendenti e persistenti; tutte le locandine restano a colori. I cinque identificatori precedenti restano validi, inclusa la scelta posters, ora chiamata Panoramico.
+Critica prima del codice: evitare statistiche enormi come apertura di ogni pagina e venti campioni colore in verticale. Nessun numero di velocità o avanzamento simulato. Il gradiente è richiesto esplicitamente: movimento molto lento e neutro, disattivato con Riduci movimento. Il player usa il bordo del display per il video, safe-area solo sui controlli e pannelli; la pausa non deve mantenere l'overlay visibile per sempre. Le palette esistenti restano disponibili.
 
-Layout: Classico conserva la disposizione originale; Compatto riduce altezza della testata, spaziature e densità dei moduli; Panoramico centra le introduzioni e amplia sezioni e controlli; Elenco organizza sezioni, impostazioni e moduli in righe; Pannelli separa le aree operative; Focus porta la navigazione in alto e raccoglie i contenuti in una colonna; Editoriale usa titoli, righe e colonne; Studio offre aree operative e una barra laterale su telefono e tablet; Morbido usa sezioni ampie e arrotondate; Essenziale riduce riquadri e bordi. Ogni profilo applica regole a Cerca, Catalogo, Libreria, Serata, Download, Impostazioni e dialoghi. I controlli conservano azioni, etichette e identificatori. I siti esterni e i selettori del sistema mantengono la loro interfaccia.
-
-Palette scure: Grafite, Oceano, Salvia, Ambra, Malva. Palette chiare: Carta (bianco/blu), Crema (avorio/terracotta), Laguna (menta/turchese), Rosa (rosa/lampone), Lavanda (lilla/indaco). Token condivisi per superfici, testo, accento e testo dei pulsanti. Le icone delle barre Android diventano scure sui fondi chiari. Selezionare una palette chiara esce dalla modalità cinema; riattivarla scurisce tutte le superfici e conserva un accento coerente e leggibile.
-
-Revisione del piano: dieci densità e strutture della shell, non dieci semplici griglie di locandine. Su tablet le schermate operative di Editoriale, Studio e Pannelli possono affiancare introduzioni, moduli o sezioni dei file. Su telefono l'accesso a ogni controllo resta esplicito. Font locali Nunito Sans/Bricolage, focus visibile, movimento ridotto e testi con contrasto almeno 4,5:1. Grafite/Classico resta il default richiesto, senza nuove tinte in prima apertura.
+Verifica: ogni punto della richiesta ha un controllo funzionale; confronto testuale Generali, ricerche fuori catalogo iniziale, risposte fuori ordine, errore trailer, chiusura e cambio scheda, progressi reali, focus durante aggiornamento download, tutti gli schermi a 360/390/768/1440 e orizzontale.

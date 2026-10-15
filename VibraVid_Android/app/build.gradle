@@ -7,8 +7,8 @@ android {
         applicationId 'it.vibravid.studio'
         minSdk 26
         targetSdk 35
-        versionCode 28000
-        versionName '2.8.0-android'
+        versionCode 31000
+        versionName '3.1.0-android'
         testInstrumentationRunner 'it.vibravid.studio.tests.StreamSmoke'
     }
     buildTypes {

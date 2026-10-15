@@ -34,7 +34,8 @@ final class CinemaControls extends FrameLayout {
     private final Icon[] icons=new Icon[5];
     private boolean visible=true,locked,playing,scrubbing,pip;
     private long duration=C.TIME_UNSET;
-    private final Runnable hide=()->{if(playing&&!scrubbing)hideControls();};
+    private int safeTop;
+    private final Runnable hide=()->{if(!scrubbing&&!locked&&!pip)hideControls();};
     private final Runnable hideHud=this::dismissHud;
     private final Runnable hideUnlock=this::dismissUnlock;
 
@@ -43,7 +44,7 @@ final class CinemaControls extends FrameLayout {
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         chrome=new FrameLayout(context);addView(chrome,new LayoutParams(-1,-1));
         View scrim=new View(context){final Paint paint=new Paint();float edge;Shader upper,lower;
-            @Override protected void onSizeChanged(int width,int height,int oldWidth,int oldHeight){super.onSizeChanged(width,height,oldWidth,oldHeight);edge=Math.min(dp(190),height*.43f);upper=new LinearGradient(0,0,0,edge,0xd9000000,Color.TRANSPARENT,Shader.TileMode.CLAMP);lower=new LinearGradient(0,height-edge,0,height,Color.TRANSPARENT,0xeb000000,Shader.TileMode.CLAMP);}
+            @Override protected void onSizeChanged(int width,int height,int oldWidth,int oldHeight){super.onSizeChanged(width,height,oldWidth,oldHeight);edge=Math.min(dp(130),height*.30f);upper=new LinearGradient(0,0,0,edge,0xd9000000,Color.TRANSPARENT,Shader.TileMode.CLAMP);lower=new LinearGradient(0,height-edge,0,height,Color.TRANSPARENT,0xeb000000,Shader.TileMode.CLAMP);}
             @Override protected void onDraw(Canvas canvas){
             paint.setShader(upper);canvas.drawRect(0,0,getWidth(),edge,paint);
             paint.setShader(lower);canvas.drawRect(0,getHeight()-edge,getWidth(),getHeight(),paint);
@@ -69,7 +70,7 @@ final class CinemaControls extends FrameLayout {
         current.setMinWidth(dp(48));remaining.setMinWidth(dp(48));progress.addView(current,new LinearLayout.LayoutParams(-2,dp(48)));
         current.setGravity(Gravity.CENTER_VERTICAL);remaining.setGravity(Gravity.CENTER_VERTICAL|Gravity.END);
         timeline=new DefaultTimeBar(context);timeline.setTag("player-timeline");timeline.setContentDescription(AppLanguage.text(getContext(),"Avanzamento del video"));
-        timeline.setPlayedColor(0xfff4f4f5);timeline.setScrubberColor(Color.WHITE);timeline.setBufferedColor(0xff777a80);timeline.setUnplayedColor(0xff3b3e45);
+        timeline.setPlayedColor(0xffe50914);timeline.setScrubberColor(Color.WHITE);timeline.setBufferedColor(0xff777a80);timeline.setUnplayedColor(0xff3b3e45);
         progress.addView(timeline,new LinearLayout.LayoutParams(0,dp(48),1));progress.addView(remaining,new LinearLayout.LayoutParams(-2,dp(48)));bottom.addView(progress);
         timeline.addListener(new TimeBar.OnScrubListener(){
             @Override public void onScrubStart(TimeBar bar,long position){scrubbing=true;handler.removeCallbacks(hide);preview(position);}
@@ -92,7 +93,7 @@ final class CinemaControls extends FrameLayout {
     }
     private int dp(float value){return Math.round(value*getResources().getDisplayMetrics().density);}
     private TextView text(String value,float size,boolean bold){TextView text=new TextView(getContext());text.setText(value);text.setTextSize(size);text.setTextColor(0xfff4f4f5);text.setFontFeatureSettings("tnum");
-        if(font==null)try{font=Typeface.createFromAsset(getContext().getAssets(),"fonts/nunito-sans.ttf");}catch(RuntimeException ignored){font=Typeface.create("sans-serif",Typeface.NORMAL);}text.setTypeface(Typeface.create(font,bold?Typeface.BOLD:Typeface.NORMAL));return text;}
+        if(font==null)try{font=Typeface.createFromAsset(getContext().getAssets(),"fonts/inter.ttf");}catch(RuntimeException ignored){font=Typeface.create("sans-serif",Typeface.NORMAL);}text.setTypeface(Typeface.create(font,bold?Typeface.BOLD:Typeface.NORMAL));return text;}
     private android.graphics.drawable.Drawable pill(int color){GradientDrawable background=new GradientDrawable();background.setColor(color);background.setCornerRadius(dp(24));return background;}
     private android.graphics.drawable.Drawable ripple(){return new android.graphics.drawable.RippleDrawable(android.content.res.ColorStateList.valueOf(0x33ffffff),null,pill(Color.WHITE));}
     private Icon icon(String symbol,String description,String tag,View.OnClickListener click){Icon icon=new Icon(getContext(),symbol);icon.setContentDescription(AppLanguage.text(getContext(),description));icon.setTag(tag);icon.setFocusable(true);icon.setBackground(ripple());icon.setOnClickListener(v->{interacted();click.onClick(v);});return icon;}
@@ -104,7 +105,8 @@ final class CinemaControls extends FrameLayout {
         timeline.setEnabled(length>0&&length!=C.TIME_UNSET);timeline.setDuration(length>0?length:0);timeline.setBufferedPosition(Math.max(0,buffered));
         if(!scrubbing){timeline.setPosition(Math.max(0,position));current.setText(time(position));remaining.setText(length>0?"−"+time(Math.max(0,length-position)):"--:--");}
         buffering.setVisibility(isBuffering&&!pip?VISIBLE:GONE);center.setVisibility(isBuffering?INVISIBLE:VISIBLE);
-        if(!ready&&!locked&&!pip)showControls();
+        // Position updates must never reveal or extend the overlay.
+
     }
     void speedLabel(float speed){captions[1].setText(String.format(Locale.ROOT,"%s×",speed==Math.round(speed)?Integer.toString(Math.round(speed)):Float.toString(speed)));}
     void fitLabel(boolean fill){captions[2].setText(AppLanguage.text(getContext(),fill?"Riempi":"Adatta"));}
@@ -115,7 +117,7 @@ final class CinemaControls extends FrameLayout {
     private void dismissUnlock(){if(locked)unlock.setVisibility(GONE);}
     boolean locked(){return locked;}
     boolean shown(){return visible;}
-    void interacted(){handler.removeCallbacks(hide);if(playing&&!locked&&!pip)handler.postDelayed(hide,3500);}
+    void interacted(){handler.removeCallbacks(hide);android.view.accessibility.AccessibilityManager access=(android.view.accessibility.AccessibilityManager)getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);if(visible&&!locked&&!pip&&(access==null||!access.isTouchExplorationEnabled()))handler.postDelayed(hide,3500);}
     void toggle(){if(locked){unlock.setVisibility(VISIBLE);handler.removeCallbacks(hideUnlock);handler.postDelayed(hideUnlock,3500);notice("Schermo bloccato");return;}if(visible)hideControls();else showControls();}
     void showControls(){if(locked||pip)return;visible=true;chrome.animate().cancel();chrome.setVisibility(VISIBLE);chrome.setAlpha(1f);interacted();}
     void hideControls(){if(!visible)return;visible=false;handler.removeCallbacks(hide);chrome.animate().cancel();
@@ -123,14 +125,18 @@ final class CinemaControls extends FrameLayout {
     void setLocked(boolean value){locked=value;if(value){hideControls();unlock.setVisibility(VISIBLE);handler.postDelayed(hideUnlock,3500);notice("Schermo bloccato");}else{handler.removeCallbacks(hideUnlock);unlock.setVisibility(GONE);showControls();}}
     void pip(boolean value){pip=value;handler.removeCallbacks(hideHud);hud.setVisibility(GONE);unlock.setVisibility(GONE);buffering.setVisibility(GONE);if(value){chrome.animate().cancel();chrome.setVisibility(GONE);visible=false;handler.removeCallbacks(hide);}else if(!locked)showControls();else toggle();}
     void suspend(){handler.removeCallbacksAndMessages(null);chrome.animate().cancel();}
-    void safeInsets(int left,int topInset,int right,int bottomInset){chrome.setPadding(left,topInset,right,bottomInset);}
-    @Override protected void onSizeChanged(int width,int height,int oldWidth,int oldHeight){super.onSizeChanged(width,height,oldWidth,oldHeight);boolean compact=height<dp(330);
-        top.getLayoutParams().height=dp(compact?64:80);top.requestLayout();
+    void safeInsets(int left,int topInset,int right,int bottomInset){
+        safeTop=topInset;chrome.setPadding(left,topInset,right,bottomInset);
+        LayoutParams un=(LayoutParams)unlock.getLayoutParams();un.leftMargin=dp(20)+left;un.rightMargin=dp(20)+right;unlock.setLayoutParams(un);
+        LayoutParams hp=(LayoutParams)hud.getLayoutParams();hp.leftMargin=left+dp(8);hp.rightMargin=right+dp(8);hp.topMargin=topInset+dp(getWidth()>getHeight()||getHeight()<dp(380)?66:94);hud.setLayoutParams(hp);
+    }
+    @Override protected void onSizeChanged(int width,int height,int oldWidth,int oldHeight){super.onSizeChanged(width,height,oldWidth,oldHeight);boolean compact=width>height||height<dp(380);
+        top.getLayoutParams().height=dp(compact?56:80);top.requestLayout();
         center.getLayoutParams().height=dp(compact?60:88);center.setTranslationY(compact?-dp(12):0);center.requestLayout();
         for(int i=0;i<center.getChildCount();i++){View child=center.getChildAt(i);child.getLayoutParams().width=dp(i==1?(compact?64:88):(compact?48:64));child.getLayoutParams().height=dp(i==1?(compact?64:88):(compact?48:64));child.requestLayout();}
         for(int i=0;i<5;i++){captions[i].setVisibility(compact?GONE:VISIBLE);toolbar.getChildAt(i).getLayoutParams().height=dp(compact?48:56);toolbar.getChildAt(i).requestLayout();}
         bottom.setPadding(dp(width<dp(380)?12:24),0,dp(width<dp(380)?12:24),dp(compact?4:16));bottom.requestLayout();
-        LayoutParams hp=(LayoutParams)hud.getLayoutParams();hp.topMargin=dp(compact?66:94);hud.setLayoutParams(hp);
+        LayoutParams hp=(LayoutParams)hud.getLayoutParams();hp.topMargin=safeTop+dp(compact?66:94);hud.setLayoutParams(hp);
     }
     /** Small code-native icons keep all controls sharp at every density. */
     private final class Icon extends View {

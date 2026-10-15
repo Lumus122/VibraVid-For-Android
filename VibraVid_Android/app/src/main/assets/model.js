@@ -15,7 +15,7 @@
     {id:'minimal', name:'Essenziale', note:'Superfici pulite, pochi bordi e spazi misurati.'}
   ];
   const palettes = [
-    {id:'graphite', name:'Grafite', note:'Carbone e perla', colors:{paper:'#111215',surface:'#1e2025',soft:'#2b2e35',raised:'#30333b',recess:'#16181d',ink:'#f3f2ef',muted:'#bec0c6',line:'#454850',accent:'#e4e2dc',cinemaPaper:'#08090b',cinemaSurface:'#17191d',cinemaSoft:'#252830'}},
+    {id:'graphite', name:'Grafite', note:'Carbone e perla', colors:{paper:'#141414',surface:'#232323',soft:'#2b2b2b',raised:'#333333',recess:'#0a0a0a',ink:'#ffffff',muted:'#b3b3b3',line:'#404040',accent:'#ffffff',cinemaPaper:'#000000',cinemaSurface:'#181818',cinemaSoft:'#262626'}},
     {id:'ocean', name:'Oceano', note:'Ardesia e azzurro', colors:{paper:'#10151c',surface:'#1b2531',soft:'#283647',raised:'#2d3e50',recess:'#141c26',ink:'#edf3f8',muted:'#b8c8d8',line:'#52667b',accent:'#b2d1ef',cinemaPaper:'#070b10',cinemaSurface:'#141c26',cinemaSoft:'#233141'}},
     {id:'sage', name:'Salvia', note:'Antracite e verde tenue', colors:{paper:'#111714',surface:'#1e2923',soft:'#2b3a31',raised:'#304238',recess:'#161f1a',ink:'#f0f5ef',muted:'#bdcdbf',line:'#536d5d',accent:'#bed5bf',cinemaPaper:'#080d0a',cinemaSurface:'#17211b',cinemaSoft:'#25352b'}},
     {id:'amber', name:'Ambra', note:'Fumo e sabbia', colors:{paper:'#181410',surface:'#2b241d',soft:'#3c3228',raised:'#453a2f',recess:'#211b15',ink:'#f7f1e8',muted:'#d0c2b2',line:'#76634f',accent:'#e2c8a6',cinemaPaper:'#0e0a07',cinemaSurface:'#211a14',cinemaSoft:'#34291f'}},
@@ -80,6 +80,8 @@
       existing.image_credit = incoming.image_credit;
     }
     if (!existing.url) existing.url = incoming.url;
+    for(const key of ['preview','duration','description','catalog_id','catalog_rating','director','metadata_source','cast_source'])if(!existing[key]&&incoming[key])existing[key]=incoming[key];
+    if(!existing.cast?.length&&incoming.cast?.length)existing.cast=incoming.cast;
   }
   function clean(row) {
     if (!row || typeof row !== 'object' || Array.isArray(row)) throw new Error('Un titolo del file non è valido.');
@@ -98,6 +100,10 @@
       duration: integer(row.duration, 1, 600, true), notes: text(row.notes || '', 2000),
       tags: [...new Set(tags.map(t => text(t, 32, true)))], collection_name: text(row.collection_name || '', 80),
       url: url(row.url || ''), preview: url(row.preview || ''), description: text(row.description || '', 6000),
+      catalog_id: text(row.catalog_id || '',100),
+      catalog_rating: typeof row.catalog_rating==='number' && Number.isFinite(row.catalog_rating) && row.catalog_rating>0 && row.catalog_rating<=10 ? row.catalog_rating : null,
+      director: text(row.director || '',300), metadata_source:text(row.metadata_source || '',200), cast_source:text(row.cast_source || '',200),
+      cast: (Array.isArray(row.cast)?row.cast:[]).slice(0,24).map(actor=>({name:text(actor.name,200,true),role:text(actor.role||'',200),image:url(actor.image||'')})),
       image_source: url(row.image_source || ''), image_credit: text(row.image_credit || '', 1000)
     };
   }

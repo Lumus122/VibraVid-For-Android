@@ -64,3 +64,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 Core library desugaring: Android Open Source Project, Apache 2.0. See APACHE-2.0.txt.
+
+Inter — Copyright 2020 The Inter Project Authors (https://github.com/rsms/inter). SIL Open Font License 1.1; fonts/inter-OFL.txt.
+Bebas Neue — Copyright 2010 Dharma Type. SIL Open Font License 1.1; fonts/bebas-neue-OFL.txt.
+Home metadata: Apple Movies RSS and TVmaze (https://www.tvmaze.com/api), CC BY-SA attribution for TVmaze metadata. Artwork remains the property of the respective rights holders and is referenced by source URL.

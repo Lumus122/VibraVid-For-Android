@@ -54,7 +54,10 @@ public final class ProviderEngine implements AutoCloseable {
     private JSONObject row(JSONObject source,String id,String name,String kind,String url,String poster,Object year,JSONObject raw)throws Exception{
         JSONObject entry=new JSONObject().put("provider",source.getString("id")).put("source",source.getString("name")).put("root",root(source)).put("id",id)
             .put("name",name.contains("<")||name.contains("&")?Jsoup.parse(name).text():name).put("kind",kind).put("url",url).put("poster",poster).put("year",year==null?JSONObject.NULL:year).put("raw",raw);
-        String key=remember(entry);return new JSONObject().put("key",key).put("name",entry.getString("name")).put("kind",kind).put("poster",poster).put("year",entry.opt("year"))
+        Object synopsis=raw.opt("plot");if(!(synopsis instanceof String))synopsis=raw.opt("description");if(!(synopsis instanceof String))synopsis=raw.opt("synopsis");
+        String description=synopsis instanceof String?Jsoup.parse((String)synopsis).text():"";
+        if(description.length()>4000)description=description.substring(0,4000);
+        String key=remember(entry);return new JSONObject().put("description",description).put("backdrop",raw.optString("_ui_backdrop")).put("key",key).put("name",entry.getString("name")).put("kind",kind).put("poster",poster).put("year",entry.opt("year"))
             .put("provider",source.getString("id")).put("source",source.getString("name"));
     }
     public JSONObject search(String query,String sourceId,String kind,ProviderHttp.Call call)throws Exception{
@@ -105,6 +108,7 @@ public final class ProviderEngine implements AutoCloseable {
                     String date=title.optString("last_air_date",title.optString("release_date")),poster="";JSONArray translations=array(title,"translations");
                     for(int t=0;t<translations.length();t++){JSONObject translation=translations.getJSONObject(t);if(translation.optString("key").equals("first_air_date")||translation.optString("key").equals("release_date"))date=translation.optString("value",date);}
                     for(String wanted:new String[]{"poster","cover","cover_mobile","background"}){JSONArray images=array(title,"images");for(int j=0;j<images.length();j++){JSONObject image=images.getJSONObject(j);if(wanted.equals(image.optString("type"))&&!image.optString("filename").isEmpty()){poster=absolute(cdn+"/", "images/"+image.getString("filename"));break;}}if(!poster.isEmpty())break;}
+                    for(int j=0;j<array(title,"images").length();j++){JSONObject image=array(title,"images").getJSONObject(j);if("background".equals(image.optString("type"))&&!image.optString("filename").isEmpty()){title.put("_ui_backdrop",absolute(cdn+"/","images/"+image.getString("filename")));break;}}
                     title.put("language",language);String url=root(effective)+"/"+language+"/titles/"+titleId+"-"+title.optString("slug");
                     output.put(row(effective,titleId,title.optString("name"),title.optString("type").equals("movie")?"movie":"series",url,poster,year(date),title));
                 }catalogs++;
